@@ -1,0 +1,6 @@
+name = "Webform Export Custom Admin"
+description = "Creates a custom Admin menu for webform exports"
+package = "Biztalk"
+core = "7.x"
+version = "7.x-1.0"
+dependencies[] = elysia_cron

@@ -1,0 +1,463 @@
+<?php
+
+// get a list of the webform hook names
+function get_active_biztalk_wfh(){
+  // find all enabled variable names, unique according to webform nid
+  $query = db_select('variable', 'v');
+  $query->fields('v', array('name'))
+          ->condition('v.name', 'biztalk-enabled-%', 'LIKE')
+          ->condition('v.value', 'i:1;');
+  $results = $query->execute()->fetchAll();
+  $wfh = array();
+  foreach ($results as $result) {
+    $varname = $result->name;
+    $nid = str_replace('biztalk-enabled-1-', '', $varname);
+    $wfh[] = "webform_client_form_$nid";
+  }
+  return $wfh;
+}
+
+function biztalk_custom_admin_form_alter(&$form, &$form_state, $form_id) {
+  $biztalk_active_nids = get_active_biztalk_wfh();
+  // dpm($biztalk_active_nids, 'biztalk_active_nids');
+  if (in_array($form_id, $biztalk_active_nids)) {
+    // we need to perform validation on the these blue marble brand contact forms, because they're active to the Biztalk module
+    $form['#validate'][] = '_bmb_validate';
+  }
+  // drupal_set_message($form_id . ' is form id');
+}
+
+function _bmb_validate($form, &$form_state) {
+  // dpm($form_state['values'], 'formstate values');
+  // form_set_error("submitted][im_a", 'debugging');
+
+  // checking your_email
+  if (!empty($form_state['values']['submitted']['your_email']) && !filter_var($form_state['values']['submitted']['your_email'], FILTER_VALIDATE_EMAIL)) {
+    form_set_error("submitted][your_email", 'Email address invalid');
+  }
+  
+  if (!empty($form_state['values']['submitted']['upc'])) {
+    if (!ctype_digit($form_state['values']['submitted']['upc'])) {
+	  form_set_error("submitted][estimated_order_volume_in_us_", 'Please enter only numbers for the upc');
+    }
+  }
+
+  // checking phone
+  // if (!preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $form_state['values']['submitted']['phone'])) {
+  //   form_set_error("submitted][phone", 'Please enter phone numbers as ###-###-####');
+  // }
+}
+
+// this form is specific to UNFI.com
+function biztalk_custom_admin_form_webform_client_form_434_alter(&$form, &$form_state) {
+  $form['#validate'][] = '_new_customer_validate';
+}
+
+function _new_customer_validate($form, &$form_state) {
+  // if Other, make sure they fill in the Other Business field
+  // if International, 8 fields cannot be empty, some with validation
+  // if not International, 5 fields cannot be empty
+
+  // Business Type = Other, make sure they filled in the other field
+  // $obt = $form_state['values']['submitted']['business_type'];
+  // dpm($obt, 'obt');
+  // if (empty($obt)) {
+  //   dpm('empty obt');
+  // } else {
+  //   dpm('not empty obt');
+  // }
+  if ($form_state['values']['submitted']['business_type'] == 'Other') {
+    // watchdog('mtm', 'in other');
+    if (empty($form_state['values']['submitted']['other_business_type'])) {
+      // watchdog('mtm', 'empty other');
+      form_set_error("submitted][other_business_type", 'Please enter the type of business');
+    } else {
+      // watchdog('mtm','not empty other');
+    }
+  }
+  // dpm($form_state['values']['submitted'], 'submitted');
+
+  // Business Type = International
+  if ($form_state['values']['submitted']['business_type'] == 'International') {
+    // validate Intl-specific fields
+    if (empty($form_state['values']['submitted']['primary_focus'])) {
+      form_set_error("submitted][primary_focus", 'Please enter the Primary Focus');
+    }
+    if (empty($form_state['values']['submitted']['estimated_order_frequency'])) {
+      form_set_error("submitted][estimated_order_frequency", 'Please enter the Estimated Order Frequency');
+    }
+    if (empty($form_state['values']['submitted']['estimated_order_volume_in_us_'])) {
+      form_set_error("submitted][estimated_order_volume_in_us_", 'Please enter the Estimated Order Volume in US $');
+    } else if (!ctype_digit($form_state['values']['submitted']['estimated_order_volume_in_us_'])) {
+      form_set_error("submitted][estimated_order_volume_in_us_", 'Please enter only numbers for the order volume amount');
+    }
+    if (empty($form_state['values']['submitted']['identify_country_countries_to_which_product_will_be_exported'])) {
+      form_set_error("submitted][identify_country_countries_to_which_product_will_be_exported", 'Please enter the country/countries to which product will be exported');
+    }
+    if (empty($form_state['values']['submitted']['documents_required_to_ship_to_your_country'])) {
+      form_set_error("submitted][documents_required_to_ship_to_your_country", 'Please enter the documents required to ship to your country');
+    }
+    if (empty($form_state['values']['submitted']['us_freight_forwarder_name'])) {
+      form_set_error("submitted][us_freight_forwarder_name", 'Please enter the Freight Forwarder Name');
+    }
+    if (empty($form_state['values']['submitted']['contact_name'])) {
+      form_set_error("submitted][contact_name", 'Please enter the Freight Contact Name');
+    }
+    if (empty($form_state['values']['submitted']['telephone_shipping'])) {
+      form_set_error("submitted][telephone_shipping", 'Please enter the Freight Telephone Number');
+    } else {
+      // validate freight phone number
+      if (!preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $form_state['values']['submitted']['telephone_shipping'])) {
+        form_set_error("submitted][telephone_shipping", 'Please enter phone numbers as ###-###-####');
+      }
+    }
+
+    // validate freight email
+    if (!empty($form_state['values']['submitted']['email_address_shipping']) && !filter_var($form_state['values']['submitted']['email_address_shipping'], FILTER_VALIDATE_EMAIL)) {
+      form_set_error("submitted][email_address_shipping", 'Shipping email address invalid');
+    }
+  } else {
+    // not International
+    // check # of locations
+    if (empty($form_state['values']['submitted']['_of_locations']) || !ctype_digit($form_state['values']['submitted']['_of_locations'])) {
+      form_set_error("submitted][_of_locations", 'Number of locations needs to be an integer');
+    }
+
+    // check date format
+    $datePasses = true;
+    $businessOpenDateArr  = explode('/', $form_state['values']['submitted']['business_open_date']);
+    // dpm($form_state['values']['submitted'], 'submitted');
+    // dpm($businessOpenDateArr, 'businessOpenDateArr');
+    if (empty($form_state['values']['submitted']['business_open_date']) || count($businessOpenDateArr) != 3 || !checkdate($businessOpenDateArr[0], $businessOpenDateArr[1], $businessOpenDateArr[2])) {
+      $datePasses = false;
+    }
+    if (strlen($businessOpenDateArr[0]) != 2 || strlen($businessOpenDateArr[1]) != 2 || strlen($businessOpenDateArr[2]) != 4 || $businessOpenDateArr[2] < 1900) {
+      $datePasses = false;
+    }
+    if (!$datePasses) {
+      form_set_error("submitted][business_open_date", 'Please match date to format MM/DD/YYYY and be greater than (or equal to) 1900');
+    }
+
+    // check square footage to be integer less than 1000000
+    $sqFtPasses = true;
+    $sqFt = $form_state['values']['submitted']['business_sq_footage_2'];
+    if (empty($form_state['values']['submitted']['business_sq_footage_2']) || !ctype_digit($sqFt) || $sqFt > 1000000) $sqFtPasses = false;
+    if (!$sqFtPasses) {
+      form_set_error("submitted][business_sq_footage_2", 'Please include a square footage less than or equal to 1,000,000 using digits only');
+    }
+
+    // check resale certificates aren't empty
+    if (empty($form_state['values']['submitted']['do_you_have_a_resale_certificate']) || is_null($form_state['values']['submitted']['do_you_have_a_resale_certificate'])) {
+      form_set_error("submitted][do_you_have_a_resale_certificate", 'Please choose yes or no to "Do you have a resale certificate?"');
+    }
+    if (empty($form_state['values']['submitted']['is_your_locations_accessible_by_a_53_trailer']) || is_null($form_state['values']['submitted']['is_your_locations_accessible_by_a_53_trailer'])) {
+      form_set_error("submitted][is_your_locations_accessible_by_a_53_trailer", 'Please choose yes or no to "Is your location(s) accessible by a 53\' Trailer?"');
+    }
+  }
+
+  // the rest are validations that apply to any "Businesss Type" selection
+  // check phone and fax
+  $phoneTypes = array('phone', 'fax');
+  foreach ($phoneTypes as $phone) {
+    // in case they have it empty
+    if ($phone == 'fax' && empty($form_state['values']['submitted'][$phone])) continue;
+
+    if (!preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $form_state['values']['submitted'][$phone])) {
+      form_set_error("submitted][$phone", 'Please enter phone numbers as ###-###-####');
+    }
+  }
+
+  // check email
+  if (!filter_var($form_state['values']['submitted']['email_address'], FILTER_VALIDATE_EMAIL)) {
+    form_set_error("submitted][email_address", 'Email address invalid');
+  }
+}
+
+/**
+ * Implement hook_permission
+ */
+function biztalk_custom_admin_permission() {
+  return array(
+    'administer biztalk' => array(
+      'title' => t('Administer Biztalk mappings'),
+      'description' => t('Allows users to configure webform fields to pipe-delimited exports executed on cron.'),
+    ),
+  );
+}
+
+/**
+ * Returns all webform nids
+ * Used in hook_menu and the creation of the webform list
+ */
+function get_nids_of_webforms() {
+  $query = db_select('webform', 'w');
+  $query->fields('w', array('nid'));
+  $results = $query->execute()->fetchAll();
+
+  $webform_nids = array();
+  foreach ($results as $result) {
+    $webform_nids[] = $result->nid;
+  }
+
+  return $webform_nids;
+}
+
+// Implement hook_menu()
+function biztalk_custom_admin_menu() {
+  $items = array();
+
+  $webform_nids = get_nids_of_webforms();
+
+  $items['admin/config/biztalk_custom_admin'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => 'Biztalk mappings',
+    'description' => 'BizTalk landing page',
+    'page callback' => '_biztalk_page',
+    'access arguments' => array('administer biztalk'),
+  );
+
+  foreach ($webform_nids as $idx => $wf_nid) {
+    $title = node_load($wf_nid)->title;
+
+    $wf_title_conf = $title;
+    if (!empty(variable_get('biztalk_' . $wf_nid))) {
+      $wf_title_conf .= ' (configured)';
+    }
+
+    $items['admin/config/biztalk_custom_admin/' . $wf_nid] = array(
+      'title' => $wf_title_conf,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('biztalk_webform', 3),
+      'access arguments' => array('administer biztalk'),
+      'description' => 'BizTalk mappings for webform ' . $title,
+      'file' => 'biztalk_custom_admin_simple_form.inc',
+    );
+  }
+
+  $items['admin/config/biztalk_custom_admin_cron'] = array(
+    'title' => 'Biztalk CSV export settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('biztalk_custom_admin_cron_form'),
+    'access arguments' => array('administer biztalk'),
+    'file' => 'biztalk_custom_admin_simple_form.inc'
+  );
+
+  $items['admin/config/biztalk_custom_admin/confirm/%/%'] = array(
+    'title' => 'Remove CSV header',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('biztalk_webform_submit_removal_confirm', 4, 5),
+    'access arguments' => array('administer biztalk'),
+    'description' => 'Remove a header, the item will no longer be mapped',
+    'file' => 'biztalk_custom_admin_simple_form.inc',
+  );
+
+  return $items;
+}
+
+function biztalk_custom_admin_theme() {
+  return array(
+    'biztalk_webform' => array(
+      'render element' => 'form',
+      'file' => 'biztalk_custom_admin_simple_form.inc',
+    ),
+  );
+}
+
+/**
+ * Returns basic markup with <strong> indicating the currently selected webform
+ *
+ * @param int $current_nid
+ * The current webform that is being configured for BizTalk
+ */
+function _biztalk_page($current_nid = NULL) {
+  $webform_nids = get_nids_of_webforms();
+
+  $output = '<h3>Please choose a webform:</h3>';
+  foreach ($webform_nids as $wf_nid) {
+    // see if it's enabled for CSV output
+    $bid = variable_get('biztalk_bid', 1);
+    $suffix = '';
+    if (variable_get("biztalk-enabled-$bid-$wf_nid", 0)) {
+      $suffix = ' (active)';
+    }
+
+    $title = node_load($wf_nid)->title;
+    if ($wf_nid == $current_nid) {
+      // if currently viewing this page, make it bold to stand out
+      $output .= '<strong>' . l($title, "admin/config/biztalk_custom_admin/$wf_nid") . "</strong>$suffix<br/>";
+    } else {
+      $output .= l($title, "admin/config/biztalk_custom_admin/$wf_nid") . "$suffix<br/>";
+    }
+  }
+  return $output;
+}
+
+function biztalk_custom_admin_cronapi($op, $job = NULL) {
+  $items['biztalk_custom_admin_cron'] = array(
+    'description' => 'Exports selected webforms to CSV',
+    // runs every hour
+    'rule' => '0,30 * * * *',
+  );
+  return $items;
+}
+
+function biztalk_custom_admin_cron() {
+  biztalk_custom_admin_data_to_csv();
+}
+
+/**
+ * Primary function called on cron
+ */
+function biztalk_custom_admin_data_to_csv() {
+  $last_sid = variable_get('biztalk_last_sid', 1);
+  // $last_sid = 1;
+  $bid = variable_get('biztalk_bid', 1);
+  //grabs list of all nid's ready for export
+  $query = db_select('variable', 'v');
+    $query->fields('v', array('name', 'value'));
+    $query->condition('v.name', "biztalk-enabled-$bid-%", 'LIKE');
+    $query->condition('v.value', 'i:1;');
+  $results = $query->execute()->fetchAll();
+
+  $enabled = array();
+  foreach ($results as $i => $result) {
+    $nid = str_replace("biztalk-enabled-$bid-", '', $result->name);
+    $enabled[]=$nid;
+  }
+
+  $data = array();
+  $headers = array();
+  //loops through enabled to grab data from db and export it
+  foreach ($enabled as $export){
+    $query = db_select('biztalk_map_component', 'bmc');
+    $query->innerJoin('webform_submitted_data', 'wsd', 'bmc.cid = wsd.cid AND bmc.nid = wsd.nid');
+      $query->fields('bmc', array('cid', 'nid'))
+            ->fields('wsd', array('sid', 'data', 'no'))
+            ->condition('wsd.nid', $export)
+            ->condition('wsd.sid', $last_sid, '>')
+            ->orderBy('wsd.sid', 'ASC')
+            ->orderBy('bmc.weight', 'ASC');
+    $data[] = $query->execute()->fetchAll();
+
+    $query = db_select('biztalk_header', 'bh');
+    $query->innerJoin('biztalk_map_component', 'bmc', 'bh.hid = bmc.hid');
+      $query->fields('bmc', array('cid', 'nid'))
+            ->fields('bh', array('human'))
+            ->condition('bmc.nid', $export)
+            ->orderBy('bmc.weight', 'ASC');
+    $headers[] = $query->execute()->fetchAll();
+  }
+
+  $final_data = array();
+  // get these into a data structure by the row
+  foreach ($data as $wfinfo => $cellArr) {
+    foreach ($cellArr as $cellinfo) {
+      // for the multi-valued attributes, make sure they're comma-separated
+      if (isset($final_data[$cellinfo->nid][$cellinfo->sid][$cellinfo->cid]) && $final_data[$cellinfo->nid][$cellinfo->sid][$cellinfo->cid] != $cellinfo->data) {
+        // if it's not the exact same value then comma separate
+        $final_data[$cellinfo->nid][$cellinfo->sid][$cellinfo->cid] .= ',' . $cellinfo->data;
+      } else {
+        $final_data[$cellinfo->nid][$cellinfo->sid][$cellinfo->cid] = $cellinfo->data;
+      }
+
+    }
+  }
+
+  $final_headers = array();
+
+  foreach ($headers as $i => $header) {
+    foreach ($header as $headerinfo) {
+      if (!isset($final_headers[$headerinfo->nid])) $final_headers[$headerinfo->nid] = array();
+      array_push($final_headers[$headerinfo->nid], $headerinfo->cid);
+    }
+  }
+
+  foreach ($final_data as $nid => $datum) {
+    // if it's configured but doesn't have any submissions to export
+    if (empty($datum)) continue;
+    // biztalk_custom_admin_csv_export($datum, $headers[$i]);
+    biztalk_custom_admin_csv_export($datum, $final_headers[$nid], $nid);
+  }
+}
+
+function biztalk_custom_admin_csv_export($data = NULL, $headers = null, $nid) {
+  // PHPExcel and IOFactory
+  // Check for existence
+  if (!file_exists('sites/all/libraries/PHPExcel/PHPExcel.php')) {
+    $link = l('Download PHPExcel from repository here', 'https://github.com/PHPOffice/PHPExcel', array('attributes' => array('target'=>'_blank')));
+    drupal_set_message('Could not find PHPExcel library version 1.8. Please download and extract it such that this file is found: <br/>sites/all/libraries/PHPExcel/PHPExcel.php<br/>' . $link, 'error');
+    return;
+  }
+  include_once 'sites/all/libraries/PHPExcel/PHPExcel.php';
+  require_once 'sites/all/libraries/PHPExcel/PHPExcel/IOFactory.php';
+
+  //node title transformed for use in file naming
+  $title = node_load($nid)->title;
+  $title = strtolower($title);
+  $title = preg_replace("/[^a-z0-9_\s-]/", "", $title);
+  $title = preg_replace("/[\s-]+/", " ", $title);
+  $title = preg_replace("/[\s_]/", "-", $title);
+
+  // Create new PHPExcel object
+  $objPHPExcel = new PHPExcel();
+
+  // Set properties
+  $objPHPExcel->getProperties()->setCreator("BizTalk");
+  $objPHPExcel->getProperties()->setLastModifiedBy("BizTalk export module");
+  $objPHPExcel->getProperties()->setTitle("CSV exported on ".date('Y-m-d-H-i-s'));
+  $objPHPExcel->getProperties()->setSubject("CSV exported on ".date('Y-m-d-H-i-s'));
+  $objPHPExcel->getProperties()->setDescription("CSV for collecting form data");
+
+  // Add data
+  $objPHPExcel->setActiveSheetIndex(0);
+
+  $idx = 1;
+  $sid = 0; // forward reference
+  foreach ($data as $sid => $row) {	
+  	$colldx = 1;
+    foreach ($headers as $colId => $cid) {
+      // see if there is a set value in the data, if not, make it blank ("")
+      $cellVal = isset($row[$cid]) ? $row[$cid] : '';
+      // clean from line breaks
+      $cellVal = preg_replace( "/\r|\n/", "", $cellVal);
+      // clean all pipes
+      $cellVal = str_replace('|', '-', $cellVal);
+
+	  if ($colldx == 14) {
+		$cellVal = '"'.$cellVal.'"'; 
+      }
+	  
+      $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($colId, $idx, $cellVal );
+	  
+	  $colldx++;
+    }
+
+    $idx++;
+  }
+  variable_set('biztalk_last_sid', $sid);
+
+  // Rename sheet
+  $objPHPExcel->getActiveSheet()->setTitle(date('Y-m-d-H-i-s'));
+  $callStartTime = microtime(true);
+  
+
+
+
+  // Gets title of page and exports
+  $defaultpath = variable_get('biztalk_mounted_directory', '/mnt/BMBCRM') . '/';
+  // add custom subfolder if defined
+  $subfolder = variable_get('biztalk_folder');
+  if (!empty($subfolder)) $defaultpath .= "$subfolder/";
+  $saveFile = "$defaultpath" . date('Y-m-d-H-i-s') . "-$title.csv";
+  watchdog('mtm', "Saving file to destination $saveFile");
+  try {
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV')->setDelimiter('|')
+      ->setEnclosure('')
+      ->setLineEnding("\r\n")
+      ->setSheetIndex(0)
+      ->save($saveFile);
+  } catch (Exception $e) {
+    watchdog('mtm', "Exception thrown from PHPExcel " . $e->getMessage());
+  }
+  $objPHPExcel = "";
+}

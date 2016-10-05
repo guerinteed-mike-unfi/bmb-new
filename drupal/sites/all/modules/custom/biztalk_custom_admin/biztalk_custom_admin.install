@@ -1,0 +1,156 @@
+<?php
+/**
+ * Implements hook_schema()
+ */
+function biztalk_custom_admin_schema() {
+  $schema['biztalk_form_type'] = array(
+    'description' => 'Contact forms, etc',
+    'fields' => array(
+      'bid' => array(
+        'description' => 'The primary identifier for each biztalk mapping',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'machine' => array(
+        'description' => 'Machine name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'human' => array(
+        'description' => 'Human name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('bid'),
+  );
+
+  $schema['biztalk_header'] = array(
+    'description' => 'Index of human readable names for each form type',
+    'fields' => array(
+      'hid' => array(
+        'description' => 'The primary identifier for each header',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'bid' => array(
+        'description' => 'Foreign key for biztalk_form_type pk',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'human' => array(
+        'description' => 'Human-readable CSV header',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('hid'),
+  );
+
+  $schema['biztalk_map_component'] = array(
+    'description' => 'Map webform components to CSV headers.',
+    'fields' => array(
+      // 'mid' => array(
+      //   'description' => 'The primary identifier for each mapping (may be unnecessary)',
+      //   'type' => 'serial',
+      //   'unsigned' => TRUE,
+      //   'not null' => TRUE,
+      // ),
+      'nid' => array(
+        'description' => 'Node ID - webform_component composite key 2',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'default' => NULL,
+      ),
+      'cid' => array(
+        'description' => 'Component ID - webform_component Composite key 1',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'default' => NULL,
+      ),
+      'hid' => array(
+        'description' => 'Foreign key for biztalk_header pk',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'weight' => array(
+        'description' => 'The sortable weight for this item',
+        'type' => 'int',
+        'length' => 11,
+        'default' => NULL,
+      ),
+    ),
+    'primary key' => array('nid', 'hid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install()
+ */
+function biztalk_custom_admin_install() {
+  // Insert some values into the database.
+
+  // for biztalk_form_type table
+  $bft_rows = array(
+    array('machine' => 'contact', 'human' => 'Contact forms'),
+  );
+  if (db_table_exists('biztalk_form_type')) {
+    foreach ($bft_rows as $row) {
+      db_insert('biztalk_form_type')->fields($row)->execute();
+    }
+  }
+  // for biztalk_header table
+  $headers = array('CustomerType', 'QuestionRegarding', 'Brand', 'FirstName', 'LastName', 'Email', 'Phone', 'Address1', 'Address2', 'City', 'Zip', 'State', 'ProductName', 'UPC', 'BestByDate', 'Message', 'ReceiveUpdates', 'ConfirmAge', 'Brand');
+  $bht_rows = array();
+  foreach ($headers as $header) {
+    array_push($bht_rows, array('bid' => 1, 'human' => $header));
+  }
+  if (db_table_exists('biztalk_header')) {
+    foreach ($bht_rows as $row) {
+      db_insert('biztalk_header')->fields($row)->execute();
+    }
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function biztalk_custom_admin_uninstall() {
+  // drop all tables
+  db_drop_table('biztalk_form_type');
+  db_drop_table('biztalk_header');
+  db_drop_table('biztalk_map_component');
+
+  // delete all variables
+  variable_del('biztalk_last_sid');
+  variable_del('biztalk_folder');
+
+
+  // find all enabled variable names, unique according to webform nid
+  $query = db_select('variable', 'v');
+    $query->fields('v', array('name'));
+    $query->condition('v.name', 'biztalk-enabled-%', 'LIKE');
+  $results = $query->execute()->fetchAll();
+  foreach ($results as $result) {
+    variable_del($result->name);
+  }
+}
+
+/**
+ * Implement hook_update_N in order to turn off automatic cron
+ */
+function biztalk_custom_admin_update_7001() {
+  variable_set('cron_safe_threshold', 0);
+}
