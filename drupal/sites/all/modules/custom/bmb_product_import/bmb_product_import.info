@@ -1,0 +1,6 @@
+name = Blue Marble Brands Product Importer
+description = Custom module for importing product data for Blue Marble Brand sites
+core = 7.x
+dependencies[] = entity
+dependencies[] = domain
+package = UNFI

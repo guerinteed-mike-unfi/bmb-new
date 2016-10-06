@@ -1,0 +1,38 @@
+form {
+    margin: 0 auto;
+    font-weight: bold;
+}
+
+.UpdateScript {
+    background: #94D1F1;
+    padding: 2em;
+}
+
+.UpdateScript input {
+    width: 20%;
+    clear: both;
+    margin-top: 15px;
+    margin-left: 120px;  
+}
+
+.UpdateScript .FormSubmit {
+    margin-left: 30em;
+}
+
+.header {
+    height: 70px;
+    width: 100%;
+    text-align: left;
+    background: #616161;
+    color: #D4E6F4;
+}
+
+.header h1 { padding: 1em; }
+
+.footer {
+    height: 2em;
+    padding: 1em;
+    text-align: center;
+    background: #616161;
+    color: #D4E6F4;
+}

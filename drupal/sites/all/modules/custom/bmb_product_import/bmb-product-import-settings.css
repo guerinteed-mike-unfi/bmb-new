@@ -1,0 +1,33 @@
+#bmbws-info{
+  margin:15px 0 20px 0;
+}
+
+
+
+.bmbws-wrapper {
+ /* margin:0 0;*/
+}
+.bmbws-div {
+  float: left;
+  margin:0 10px;
+}
+.bmbws-sitename {
+  width:170px;
+  padding-top: 7px;
+}
+.bmbws-run-now {
+  padding: 5px 0 0 10px;
+}
+.form-item label {
+  display:inline;
+  font-weight: normal;
+}
+.bmbws-div button {
+  width:250px;
+  padding:5px;
+}
+span.alert {
+  color:#ff0000;
+  line-height: 30px;
+}
+
