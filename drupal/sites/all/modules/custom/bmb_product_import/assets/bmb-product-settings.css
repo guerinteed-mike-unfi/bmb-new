@@ -1,0 +1,23 @@
+#bmbws-info{
+  margin:15px 0 20px 0;
+}
+
+
+
+.bmbws-wrapper {
+ /* margin:0 0;*/
+}
+.bmb-div {
+  float:left;
+  width: 300px;
+  margin:5px 0;
+}
+
+
+
+
+span.alert {
+  color:#ff0000;
+  line-height: 30px;
+}
+

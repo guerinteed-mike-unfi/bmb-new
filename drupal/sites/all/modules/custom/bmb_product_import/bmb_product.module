@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * @file
+ * This module handles importing product information - either from PIM or BMBWS - and creating nodes.
+ * 
+ */
+
+/**
+ * Implements hook_menu(). 
+ */
+function bmb_product_menu() {
+
+  $form['admin/config/bmb-product/settings'] = array(
+    'title' => 'BMB Product Import Settings',
+    'description' => 'Settings for PIM',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bmb_product_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => '/assets/bmb-product.settings-form.inc',
+  );
+  
+  // handles the bmbws import
+  $form['bmb-product/bmbws'] = array(
+    'title' => 'BMBWS Product Update',
+    'description' => 'Add and/or Update BMB Product nodes from BMBWS.',
+    'page callback' => 'bmb_product_bmbws',
+    'page arguments' => array(2),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+    'file' => '/assets/bmb-product.import.inc',
+  );
+  
+  return $form;
+}
+
+
+/**
+ * Implementation of hook_form_alter().
+ * 
+ * @form domain_form 
+ * 
+ */
+function bmb_product_form_domain_form_alter(&$form, $form_state, $form_id)  {
+    $this_domain_id = $form['domain_id']['#value'];
+
+    $form['bmb_product'] = array(
+      '#type' => 'fieldset', 
+      '#weight' => -10,
+      '#title' => t('BMB Product Settings'), 
+      '#collapsible' => TRUE, 
+      '#collapsed' => TRUE,
+    );
+    
+    $form['bmb_product']['bmb_product_domain_include_' . $this_domain_id] = array(
+      '#type' => 'checkbox', 
+      '#title' => t('Include on BMB Settings Page'), 
+      '#default_value' => variable_get('bmb_product_domain_include_' . $this_domain_id, FALSE), 
+      '#description' => t('If FALSE then this domain will NOT appear on BMB Product settings page.'),
+    );
+    
+    $bmb_import_options = array(0 => t('PIM'), 1 => t('BMBWS'));
+    $form['bmb_product']['bmb_product_domain_method_' . $this_domain_id] = array(
+      '#type' => 'radios',
+      '#title' => t('Import Method'),
+      '#default_value' => variable_get('bmb_product_domain_method_' . $this_domain_id, NULL),
+      '#options' => $bmb_import_options,
+    );
+    
+    $form['bmb_product']['bmb_product_pim_siteid_' . $this_domain_id] = array(
+      '#type' => 'textfield',
+      '#title' => t('PIM Brand ID'),
+      '#default_value' => variable_get('bmb_product_pim_siteid_' . $this_domain_id, ''),
+      '#size' => 40,  
+    );
+    
+    $form['bmb_product']['bmb_product_bmbws_url_' . $this_domain_id] = array(
+      '#type' => 'textfield',
+      '#title' => t('BMBWS File ULR'),
+      '#default_value' => variable_get('bmb_product_bmbws_url_' . $this_domain_id, ''),
+      '#size' => 100,  
+    );
+    
+    $form['#submit'][] = 'bmb_product_form_domain_form_alter_submit';
+}
+/**
+ * Submit function for domain_form
+ * 
+ */
+function bmb_product_form_domain_form_alter_submit($form, $form_state) {
+  if( isset($form_state['values']['domain_id']) && !empty($form_state['values']['domain_id']) ){
+    $this_domain_id = $form_state['values']['domain_id'];
+    drupal_set_message('id - ' . $form_state['values']['bmb_product_domain_include_' . $this_domain_id]);
+    if($form_state['values']['bmb_product_domain_include_' . $this_domain_id] == 1) {
+      variable_set('bmb_product_domain_include_' . $this_domain_id, $form_state['values']['bmb_product_domain_include_' . $this_domain_id]);
+      variable_set('bmb_product_domain_method_' . $this_domain_id, $form_state['values']['bmb_product_domain_method_' . $this_domain_id]);
+      if(!empty($form_state['values']['bmb_product_pim_siteid_' . $this_domain_id])){
+        variable_set('bmb_product_pim_siteid_' . $this_domain_id, $form_state['values']['bmb_product_pim_siteid_' . $this_domain_id]);
+      }
+      if(!empty($form_state['values']['bmb_product_bmbws_url_' . $this_domain_id])){
+        variable_set('bmb_product_bmbws_url_' . $this_domain_id, $form_state['values']['bmb_product_bmbws_url_' . $this_domain_id]);
+      }
+    } else {
+      variable_del('bmb_product_domain_include_' . $this_domain_id);
+      variable_del('bmb_product_domain_method_' . $this_domain_id);
+      variable_del('bmb_product_pim_siteid_' . $this_domain_id);
+      variable_del('bmb_product_bmbws_url_' . $this_domain_id);
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
