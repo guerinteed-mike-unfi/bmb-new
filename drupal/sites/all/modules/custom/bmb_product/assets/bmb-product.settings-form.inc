@@ -54,28 +54,29 @@ function bmb_product_settings_form($form, &$form_state) {
   $form['pim']['bmb_products_pim_message'] = array(
       '#markup' => '<div id="bmbws-info">--> PIM sites will update via cron. Run manually only when required.</div>',
     );
-  
-  foreach($domain_info[0] as $domain_pim){
-    $pim_site = '';
-    $pim_site .= '<div class="bmbws-wrapper clearfix"><div class="bmb-div bmbws-sitename"><strong>' . $domain_pim['sitename'] . '</strong></div>';
-    $pim_id = variable_get('bmb_product_pim_siteid_' . $domain_pim['domain_id'], '');
-    if(empty($pim_id)) {
-      $pim_site .= '<div class="bmb-alert">';
-      $pim_site .= '<span class="alert">-->' . $domain_pim['sitename'] . ' is missing PIM brand ID. <a href="/admin/structure/domain/view/' . $domain_pim['domain_id'] . '/edit">Go to site page to enter.</a></span>';
-    } else {
-      $pim_site .= '<div class="bmb-div bmbws-url">';
-      $pim_site .= '<span class="">PIM site ID - ' . $pim_id . '</span';
-      $pim_site .= '<a href="/bmb-product/bmbws/' . $domain_pim['domain_id'] . '">';
+  if(isset($domain_info[0])) {
+    foreach($domain_info[0] as $domain_pim){
+      $pim_site = '';
+      $pim_site .= '<div class="bmbws-wrapper clearfix"><div class="bmb-div bmbws-sitename"><strong>' . $domain_pim['sitename'] . '</strong></div>';
+      $pim_id = variable_get('bmb_product_pim_siteid_' . $domain_pim['domain_id'], '');
+      if(empty($pim_id)) {
+        $pim_site .= '<div class="bmb-alert">';
+        $pim_site .= '<span class="alert">-->' . $domain_pim['sitename'] . ' is missing PIM brand ID. <a href="/admin/structure/domain/view/' . $domain_pim['domain_id'] . '/edit">Go to site page to enter.</a></span>';
+      } else {
+        $pim_site .= '<div class="bmb-div bmbws-url">';
+        $pim_site .= '<span class="">PIM site ID - ' . $pim_id . '</span';
+        $pim_site .= '<a href="/bmb-product/import/pim/' . $domain_pim['domain_id'] . '">';
+      }
+      $pim_site .= '</div>';
+      if(!empty($pim_id)) {
+        $pim_site .= '<div class="bmb-div bmbws-button"><button type="button" class="btn btn-default" mg="edit-bmb-products-bmbws-' . $domain_pim['domain_id'] . '">Run ' . $domain_pim['sitename'] . ' Now!!!</button></a></div>';
+      }
+      $pim_site .='</div>';
+      
+      $form['pim']['bmb_products_pim_' . $domain_pim['domain_id']] = array(
+        '#markup' => $pim_site,
+      );  
     }
-    $pim_site .= '</div>';
-    if(!empty($pim_id)) {
-      $pim_site .= '<div class="bmb-div bmbws-button"><button type="button" class="btn btn-default" mg="edit-bmb-products-bmbws-' . $domain_pim['domain_id'] . '">Run ' . $domain_pim['sitename'] . ' Now!!!</button></a></div>';
-    }
-    $pim_site .='</div>';
-    
-    $form['pim']['bmb_products_pim_' . $domain_pim['domain_id']] = array(
-      '#markup' => $pim_site,
-    );  
   }
   
   /* BMBWS FORM SETTING */
@@ -90,26 +91,28 @@ function bmb_product_settings_form($form, &$form_state) {
     '#markup' => '<div id="bmbws-info"><strong>--></strong> BMBWS process must be run locally to create the file to import. <a href="/bmb_update_nodes/update_sites.php">Go to BMBWS Import Tool</a></div>',
   );
   
-  foreach($domain_info[1] as $domain){
-    $bmbws_site = '';
-    $bmbws_site .= '<div class="bmbws-wrapper clearfix"><div class="bmb-div bmbws-sitename"><strong>' . $domain['sitename'] . '</strong></div>';
-    $bmbws_site .= '<div class="bmb-div bmbws-url">';
-    $domain_url = variable_get('bmb_product_bmbws_url_' . $domain['domain_id'], '');
-    if(empty($domain_url)) {
-      $bmbws_site .= '<span class="alert">-->' . $domain['sitename'] . ' is missing feed URL. <a href="/admin/structure/domain/view/' . $domain['domain_id'] . '/edit">Go to site page to enter.</a></span>';
-    } else {
-      $bmbws_site .= '<a href="' . $domain_url . '" target="_blank">File to import</a>';
-      $bmbws_site .= '<a href="/bmb-product/bmbws/' . $domain['domain_id'] . '">';
+  if(isset($domain_info[1])) {
+    foreach($domain_info[1] as $domain){
+      $bmbws_site = '';
+      $bmbws_site .= '<div class="bmbws-wrapper clearfix"><div class="bmb-div bmbws-sitename"><strong>' . $domain['sitename'] . '</strong></div>';
+      $bmbws_site .= '<div class="bmb-div bmbws-url">';
+      $domain_url = variable_get('bmb_product_bmbws_url_' . $domain['domain_id'], '');
+      if(empty($domain_url)) {
+        $bmbws_site .= '<span class="alert">-->' . $domain['sitename'] . ' is missing feed URL. <a href="/admin/structure/domain/view/' . $domain['domain_id'] . '/edit">Go to site page to enter.</a></span>';
+      } else {
+        $bmbws_site .= '<a href="' . $domain_url . '" target="_blank">File to import</a>';
+        $bmbws_site .= '<a href="/bmb-product/import/bmbws/' . $domain['domain_id'] . '">';
+      }
+      $bmbws_site .= '</div>';
+      if(!empty($domain_url)) {
+        $bmbws_site .= '<div class="bmb-div bmbws-button"><button type="button" class="btn btn-default" mg="edit-bmb-products-bmbws-' . $domain['domain_id'] . '">Run ' . $domain['sitename'] . ' Now!!!</button></a></div>';
+      }
+      
+      $bmbws_site .= '</div>';
+      $form['bmbws']['bmb_products_bmbws_' . $domain['domain_id']] = array(
+        '#markup' => $bmbws_site,
+      );
     }
-    $bmbws_site .= '</div>';
-    if(!empty($domain_url)) {
-      $bmbws_site .= '<div class="bmb-div bmbws-button"><button type="button" class="btn btn-default" mg="edit-bmb-products-bmbws-' . $domain['domain_id'] . '">Run ' . $domain['sitename'] . ' Now!!!</button></a></div>';
-    }
-    
-    $bmbws_site .= '</div>';
-    $form['bmbws']['bmb_products_bmbws_' . $domain['domain_id']] = array(
-      '#markup' => $bmbws_site,
-    );
   }
   
   /* DOMAIN INFORMATION */
