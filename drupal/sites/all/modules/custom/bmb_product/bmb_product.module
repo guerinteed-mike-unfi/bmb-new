@@ -12,7 +12,7 @@
 function bmb_product_menu() {
 
   $form['admin/config/bmb-product'] = array(
-    'title' => 'BMB Product Import Settings',
+    'title' => 'BMB Product',
     'description' => 'Settings for PIM',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bmb_product_settings_form'),
@@ -33,8 +33,8 @@ function bmb_product_menu() {
   $form['bmb-product/import'] = array(
     'title' => 'BMBWS Product Update',
     'description' => 'Add and/or Update BMB Product nodes from BMBWS.',
-    'page callback' => 'bmb_product_bmbws',
-    'page arguments' => array(2,3),
+    'page callback' => 'bmb_product_import',
+    'page arguments' => array(2,3,4),
     'access arguments' => array('administer site configuration'),
     'type' => MENU_CALLBACK,
     'file' => '/assets/bmb-product.import.inc',
@@ -99,15 +99,16 @@ function bmb_product_form_domain_form_alter(&$form, $form_state, $form_id)  {
 function bmb_product_form_domain_form_alter_submit($form, $form_state) {
   if( isset($form_state['values']['domain_id']) && !empty($form_state['values']['domain_id']) ){
     $this_domain_id = $form_state['values']['domain_id'];
-    drupal_set_message('id - ' . $form_state['values']['bmb_product_domain_include_' . $this_domain_id]);
     if($form_state['values']['bmb_product_domain_include_' . $this_domain_id] == 1) {
       variable_set('bmb_product_domain_include_' . $this_domain_id, $form_state['values']['bmb_product_domain_include_' . $this_domain_id]);
       variable_set('bmb_product_domain_method_' . $this_domain_id, $form_state['values']['bmb_product_domain_method_' . $this_domain_id]);
       if(!empty($form_state['values']['bmb_product_pim_siteid_' . $this_domain_id])){
         variable_set('bmb_product_pim_siteid_' . $this_domain_id, $form_state['values']['bmb_product_pim_siteid_' . $this_domain_id]);
+        variable_del('bmb_product_bmbws_url_' . $this_domain_id);
       }
       if(!empty($form_state['values']['bmb_product_bmbws_url_' . $this_domain_id])){
         variable_set('bmb_product_bmbws_url_' . $this_domain_id, $form_state['values']['bmb_product_bmbws_url_' . $this_domain_id]);
+        variable_del('bmb_product_pim_siteid_' . $this_domain_id);
       }
     } else {
       variable_del('bmb_product_domain_include_' . $this_domain_id);

@@ -16,7 +16,7 @@
 function bmb_product_settings_form($form, &$form_state) {
   
   drupal_add_css(drupal_get_path('module', 'bmb_product') . '/assets/bmb-product-settings.css');
-  
+
   // returns site name and domain id of active sites
   // exclude domains not requiring input based on domain specific settings
   $domain_raw = domain_domains();
@@ -35,6 +35,43 @@ function bmb_product_settings_form($form, &$form_state) {
   
   $form['bmb_product_info'] = array(
     '#markup' => '<p>Provides a means to update BMB sites using the PIM or BMBWS feed.</p><p>If your site does not appear here check the <a href="/admin/structure/domain">domain specific settings.</a></p>',
+  );
+  
+  $vocabulary = taxonomy_get_vocabularies();
+  $checklist_vocab_array = array('0' => '--none--'); /* Change to array('0' => '--none--'); if you want a none option*/
+  foreach ($vocabulary as $item) {
+    $key = $item->vid;
+    $value = $item->name;
+    $checklist_vocab_array[$key] = $value;
+  }
+  
+  /* TAXONOMY MAPPING */
+  $form['taxonomy_mapping'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Taxonomy Mappings'),
+    '#collapsible' => TRUE, 
+    '#collapsed' => TRUE, 
+  );
+  
+  $form['taxonomy_mapping']['bmb_product_category'] = array(
+    '#type'             => 'select',
+    '#title'            => t('Vocabulary for Product Categorization'),
+    '#options'          => $checklist_vocab_array,
+    '#default_value'    => variable_get('bmb_product_category', 0),
+  );
+  
+  $form['taxonomy_mapping']['bmb_product_attributes'] = array(
+    '#type'             => 'select',
+    '#title'            => t('Vocabulary for Product Attributes'),
+    '#options'          => $checklist_vocab_array,
+    '#default_value'    => variable_get('bmb_product_attributes', 0),
+  );
+  
+  $form['taxonomy_mapping']['bmb_product_allergens'] = array(
+    '#type'             => 'select',
+    '#title'            => t('Vocabulary for Product Allergens'),
+    '#options'          => $checklist_vocab_array,
+    '#default_value'    => variable_get('bmb_product_allergens', 0),
   );
   
   /* PIM FORM SETTING */
@@ -65,7 +102,7 @@ function bmb_product_settings_form($form, &$form_state) {
       } else {
         $pim_site .= '<div class="bmb-div bmbws-url">';
         $pim_site .= '<span class="">PIM site ID - ' . $pim_id . '</span';
-        $pim_site .= '<a href="/bmb-product/import/pim/' . $domain_pim['domain_id'] . '">';
+        $pim_site .= '<a href="/bmb-product/import/pim/' . $domain_pim['domain_id'] . '/1">';
       }
       $pim_site .= '</div>';
       if(!empty($pim_id)) {
@@ -88,7 +125,7 @@ function bmb_product_settings_form($form, &$form_state) {
   );
   
   $form['bmbws']['bmb_product_bmbws_info'] = array(
-    '#markup' => '<div id="bmbws-info"><strong>--></strong> BMBWS process must be run locally to create the file to import. <a href="/bmb_update_nodes/update_sites.php">Go to BMBWS Import Tool</a></div>',
+    '#markup' => '<div id="bmbws-info"><strong>--></strong> BMBWS process must be run locally to create the file to import. <a href="/bmb_update_nodes/update_sites.php" target="_blank">Go to BMBWS Import Tool</a></div>',
   );
   
   if(isset($domain_info[1])) {
@@ -101,7 +138,7 @@ function bmb_product_settings_form($form, &$form_state) {
         $bmbws_site .= '<span class="alert">-->' . $domain['sitename'] . ' is missing feed URL. <a href="/admin/structure/domain/view/' . $domain['domain_id'] . '/edit">Go to site page to enter.</a></span>';
       } else {
         $bmbws_site .= '<a href="' . $domain_url . '" target="_blank">File to import</a>';
-        $bmbws_site .= '<a href="/bmb-product/import/bmbws/' . $domain['domain_id'] . '">';
+        $bmbws_site .= '<a href="/bmb-product/import/bmbws/' . $domain['domain_id'] . '/1">';
       }
       $bmbws_site .= '</div>';
       if(!empty($domain_url)) {
