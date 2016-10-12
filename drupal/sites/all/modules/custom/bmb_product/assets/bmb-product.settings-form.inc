@@ -101,12 +101,12 @@ function bmb_product_settings_form($form, &$form_state) {
         $pim_site .= '<span class="alert">-->' . $domain_pim['sitename'] . ' is missing PIM brand ID. <a href="/admin/structure/domain/view/' . $domain_pim['domain_id'] . '/edit">Go to site page to enter.</a></span>';
       } else {
         $pim_site .= '<div class="bmb-div bmbws-url">';
-        $pim_site .= '<span class="">PIM site ID - ' . $pim_id . '</span';
-        $pim_site .= '<a href="/bmb-product/import/pim/' . $domain_pim['domain_id'] . '/1">';
+        $pim_site .= '<span class="">PIM site ID - ' . $pim_id . '</span>';
+        //$pim_site .= '<a href="/bmb-product/import/pim/' . $domain_pim['domain_id'] . '/1">';
       }
       $pim_site .= '</div>';
       if(!empty($pim_id)) {
-        $pim_site .= '<div class="bmb-div bmbws-button"><button type="button" class="btn btn-default" mg="edit-bmb-products-bmbws-' . $domain_pim['domain_id'] . '">Run ' . $domain_pim['sitename'] . ' Now!!!</button></a></div>';
+        $pim_site .= '<div class="bmb-div bmbws-button"><a href="/bmb-product/import/pim/' . $domain_pim['domain_id'] . '/1"><button type="button" class="btn btn-default" mg="edit-bmb-products-bmbws-' . $domain_pim['domain_id'] . '">Run ' . $domain_pim['sitename'] . ' Now!!!</button></a></div>';
       }
       $pim_site .='</div>';
       
