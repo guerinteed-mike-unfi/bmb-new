@@ -73,18 +73,17 @@
 
 
 function medorganic_preprocess_panels_pane(&$variables) {
-  ddl($variables);
+  //ddl($variables);
   
   // fieldable panel panes
   if ($variables['pane']->type == 'fieldable_panels_pane') {
     
-    // change theme suggestion for front cover panes
     if($variables['content']['#bundle'] == 'medorganic_front_cover_image_pane'){
-      $variables['theme_hook_suggestions'][] = 'panels_pane__fieldable_panels_pane__mocoverslide';
+      drupal_add_css(drupal_get_path('theme', 'medorganic') . '/css/fieldable-panels-pane--medorganic_front_cover_image_pane.css');
     }
     
-    
   }
+  
 }
 
 
