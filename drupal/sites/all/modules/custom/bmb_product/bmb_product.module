@@ -43,6 +43,39 @@ function bmb_product_menu() {
   return $form;
 }
 
+/**
+ * Implements hook_cron
+ */
+function bmb_product_cron() {
+  // the settings page has a moster switch that to run or not
+  if(variable_get('bmb_product_pim_enabled', 0) == 1) {
+    $queue = DrupalQueue::get('bmb_products');
+    // need a list of domains that need to be imported
+    $domains = domain_domains();
+    foreach($domains as $domain){
+      if(variable_get('bmb_product_domain_include_' . $domain['domain_id'], 0) == 1) {
+        $queue->create($domain['domain_id']);
+      }
+    } 
+  } 
+}
+
+/*
+ * Implements hook_cron_queue_info().
+ */
+function bmb_product_cron_queue_info(){
+  $queues['bmb_products'] = array(
+    'worker callback' => 'bmb_product_import_on_cron',
+	  'time' => 240,
+  );
+  return $queues;
+}
+
+function bmb_product_import_on_cron($item){
+  module_load_include('inc', 'bmb_product', '/assets/bmb-product.import.inc');
+  bmb_product_pim_import($item);
+}
+
 
 /**
  * Implementation of hook_form_alter().
