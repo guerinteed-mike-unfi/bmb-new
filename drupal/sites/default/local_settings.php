@@ -25,6 +25,8 @@ $databases = array (
   ),
 );
 
+//$conf['theme_debug'] = TRUE;
+
 // default configurations /////////////////////////////////////////////////////
 /*$conf['securepages_enable'] = 0;
 $conf['preprocess_css'] = 0;
