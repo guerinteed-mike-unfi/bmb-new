@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="C:\wamp\www\bmb-new\BMB New.clpprj">
 	<settings><PM_URL><![CDATA[http://localhost/bmb-new/]]></PM_URL><PM_HOME_URL><![CDATA[http://localhost/bmb-new/]]></PM_HOME_URL><PM_LIBS><![CDATA[]]></PM_LIBS><PM_FTP_CONNECTION><![CDATA[]]></PM_FTP_CONNECTION><PM_FTP_DIR><![CDATA[]]></PM_FTP_DIR><PM_FTP_UPLOAD_ON_SAVE><![CDATA[INT:0]]></PM_FTP_UPLOAD_ON_SAVE></settings><removed value=";"/><added value=""/><lastopfiles>
-		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\bmb_product.module"/>
-		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\assets\bmb-product.settings-form.inc"/>
-		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\assets\bmb-product.import.inc"/>
 	</lastopfiles>
 	<todoblock>
 		<todofile name="C:\wamp\www\bmb-new\drupal\includes\ajax.inc">
@@ -532,6 +529,28 @@
 		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\devel\devel_generate\taxonomy.devel_generate.inc">
 			<todo name="TODO: For free tagging vocabularies that do not already have terms, this" pos="3;13"/>
 		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\DiffEngine.php">
+			<todo name="todo document" pos="4;13"/>
+			<todo name="todo document" pos="4;36"/>
+			<todo name="todo document" pos="4;57"/>
+			<todo name="todo document" pos="4;75"/>
+			<todo name="todo document" pos="4;93"/>
+			<todo name="todo document" pos="4;563"/>
+			<todo name="todo document" pos="4;709"/>
+			<todo name="todo document" pos="4;767"/>
+			<todo name="todo document" pos="4;947"/>
+			<todo name="todo document" pos="4;1009"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.api.php">
+			<todo name="todo" pos="4;27"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.module">
+			<todo name="todo: Review this." pos="4;64"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.pages.inc">
+			<todo name="@todo: Should we show both or just alternatives" pos="7;239"/>
+			<todo name="@todo: revise this." pos="5;387"/>
+		</todofile>
 		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\domain\domain.module">
 			<todo name="TODO: Make this a new permission." pos="3;632"/>
 			<todo name="TODO: use url() but pass a domain_id option" pos="5;1666"/>
@@ -638,6 +657,51 @@
 		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fieldable_panels_panes\plugins\content_types\fieldable_panels_pane.inc">
 			<todo name="@todo: This won't work if $form_state does not contain 'pane' which could" pos="3;358"/>
 		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\includes\fpp_bundles.admin.inc">
+			<todo name="@todo Remove all fields of the bundle together with it." pos="3;204"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\includes\common.inc">
+			<todo name="@todo -- what if an entity uses some other flag to control revisioning" pos="5;167"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\panelizer.install">
+			<todo name="@todo Should the display be updated to hide the fields" pos="15;262"/>
+			<todo name="@todo, handle extra fields." pos="5;316"/>
+			<todo name="todo, connect this function to a form and/or ajax callback." pos="4;335"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\panelizer.module">
+			<todo name="@todo is there a good reason to use -&gt;init instead of __construct" pos="5;720"/>
+			<todo name="@todo" pos="3;1449"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityComment.class.php">
+			<todo name="@todo come up with a better default display." pos="5;49"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityDefault.class.php">
+			<todo name="@todo this seems to be unused now." pos="4;140"/>
+			<todo name="@todo Should we warn the user about this" pos="11;1239"/>
+			<todo name="@todo There may be another way of handling this." pos="5;1674"/>
+			<todo name="@todo move to og_panelizer_access();" pos="7;2073"/>
+			<todo name="@todo change theme function name" pos="5;2910"/>
+			<todo name="@todo if we enable caching of the plugins, which we should, this" pos="5;3351"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityNode.class.php">
+			<todo name="@todo -- submitted by does not exist as a pane! That's v. sad." pos="5;74"/>
+			<todo name="@todo make this happen." pos="5;220"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityTaxonomyTerm.class.php">
+			<todo name="@todo come up with a better default display." pos="5;54"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityUser.class.php">
+			<todo name="@todo come up with a better default display." pos="5;49"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\export_ui\panelizer_defaults_ui.class.php">
+			<todo name="@todo file a bug against CTools to use admin title if available." pos="5;131"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\task_handlers\panelizer_node.inc">
+			<todo name="@todo there's code on the entity handler to do this path thing for us." pos="5;153"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\views\panelizer_handler_filter_panelizer_status.inc">
+			<todo name="@todo -- see if we need to use in_array() when a select is used." pos="5;46"/>
+		</todofile>
 		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panels\i18n_panels\i18n_panels.module">
 			<todo name="todo Check if a drupal_alter() in panels_display::get_title() is applicable." pos="4;208"/>
 			<todo name="todo Check if a drupal_alter() in panels_display::get_title() is applicable." pos="4;236"/>
@@ -715,6 +779,26 @@
 		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\pathauto\pathauto.module">
 			<todo name="@todo Investigate removing this and supporting all fieldable entities." pos="5;253"/>
 			<todo name="@todo Remove the next line when http://drupal.org/node/1025870 is fixed." pos="3;693"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\lib\QueueUISystemQueue.php">
+			<todo name="@TODO - should probably do something nicer than print_r here..." pos="9;107"/>
+			<todo name="@TODO - try... catch..." pos="5;115"/>
+			<todo name="@TODO - try... catch..." pos="5;126"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\queue_ui.forms.inc">
+			<todo name="@TODO - if not implemented display an error." pos="3;19"/>
+			<todo name="@TODO - if not implemented display an error." pos="3;43"/>
+			<todo name="@TODO - if not implemented display an error." pos="3;81"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\queue_ui.module">
+			<todo name="@TODO - add validation of queue_item." pos="3;89"/>
+			<todo name="@todo remove before prod" pos="1;94"/>
+			<todo name="@todo remove before prod" pos="1;232"/>
+		</todofile>
+		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\queue_ui.pages.inc">
+			<todo name="@todo remove before prod" pos="23;10"/>
+			<todo name="@todo activation status" pos="3;55"/>
+			<todo name="@todo deactivate options" pos="3;121"/>
 		</todofile>
 		<todofile name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\token\tests\token_test.module">
 			<todo name="todo Remove when http://drupal.org/node/1173706 is fixed." pos="4;23"/>
@@ -1355,7 +1439,7 @@
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\medorganic\bootstrap\.travis.yml" crc="1476466649"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\medorganic\bootstrap\.hound.yml" crc="1476466649"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\medorganic\template.php" crc="1476473803"/>
-		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\medorganic\medorganic.info" crc="1475680827"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\medorganic\medorganic.info" crc="1476811098"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\bootstrap\templates\webform\webform-element.vars.php" crc="1470215784"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\bootstrap\templates\webform\webform-element.func.php" crc="1470215784"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\bootstrap\templates\views\views-view-table.vars.php" crc="1470215784"/>
@@ -1966,11 +2050,16 @@
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\bootstrap\bootstrap.info" crc="1470218342"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\bootstrap\bootstrap.api.php" crc="1470215784"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\themes\README.txt" crc="1467930352"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\features_saved\permissions_roles_and_ckeditor\permissions_roles_and_ckeditor.module" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\features_saved\permissions_roles_and_ckeditor\permissions_roles_and_ckeditor.info" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\features_saved\permissions_roles_and_ckeditor\permissions_roles_and_ckeditor.features.user_role.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\features_saved\permissions_roles_and_ckeditor\permissions_roles_and_ckeditor.features.user_permission.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\features_saved\permissions_roles_and_ckeditor\permissions_roles_and_ckeditor.features.ckeditor_profile.inc" crc="1476730166"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\assets\bmb-product.settings-form.inc" crc="1476298496"/>
-		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\assets\bmb-product.import.inc" crc="1476298496"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\assets\bmb-product.import.inc" crc="1476803562"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\assets\bmb-product-settings.js" crc="1476219604"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\assets\bmb-product-settings.css" crc="1476219604"/>
-		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\bmb_product.module" crc="1476479476"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\bmb_product.module" crc="1476802942"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\bmb_product\bmb_product.info" crc="1476219604"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\biztalk_custom_admin\biztalk_custom_admin_simple_form.inc" crc="1472136611"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\custom\biztalk_custom_admin\biztalk_custom_admin.module" crc="1472136611"/>
@@ -2597,6 +2686,15 @@
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\strongarm\strongarm.admin.inc" crc="1339616768"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\strongarm\README.txt" crc="1339616768"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\strongarm\LICENSE.txt" crc="1316310620"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\lib\QueueUISystemQueue.php" crc="1365546562"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\lib\QueueUIInterface.php" crc="1365546562"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\lib\QueueUI.php" crc="1365546562"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\README.txt" crc="1365546562"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\queue_ui.pages.inc" crc="1365546562"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\queue_ui.module" crc="1365546562"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\queue_ui.info" crc="1372433152"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\queue_ui.forms.inc" crc="1365546562"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\queue_ui\LICENSE.txt" crc="1316310620"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\pathauto\README.txt" crc="1444241394"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\pathauto\pathauto.tokens.inc" crc="1444241394"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\pathauto\pathauto.pathauto.inc" crc="1444241394"/>
@@ -2735,6 +2833,45 @@
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panels\LICENSE.txt" crc="1475592841"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panels\KNOWN_ISSUES.txt" crc="1475592841"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panels\CHANGELOG.txt" crc="1475592841"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\tests\panelizer_test_exportables.module" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\tests\panelizer_test_exportables.info" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\templates\panelizer-view-mode.tpl.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\views\panelizer_plugin_row_panelizer_node_view.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\views\panelizer_handler_panelizer_status.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\views\panelizer_handler_filter_panelizer_status.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\views\panelizer_handler_field_link.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\views\panelizer.views.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\task_handlers\panelizer_node.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\search_api\PanelizerSearchApiAlterCallback.class.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\panels_storage\panelizer_entity.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\panels_storage\panelizer_default.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\export_ui\panelizer_defaults_ui.class.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\export_ui\panelizer_defaults.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\user.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\taxonomy_term.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityUser.class.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityTaxonomyTerm.class.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityNode.class.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityDefault.class.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\PanelizerEntityComment.class.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\node.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\default.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\entity\comment.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\content_types\panelizer_form\panelizer_form_default.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\plugins\cache\panelizer_context.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\js\panelizer-vertical-tabs.js" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\js\panelizer-ipe.js" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\js\panelizer-entity-bundle.js" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\includes\common.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\includes\admin.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\css\panelizer-ipe.css" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\README.txt" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\panelizer.module" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\panelizer.install" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\panelizer.info" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\panelizer.api.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\LICENSE.txt" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\panelizer\CHANGELOG.txt" crc="1476730166"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\module_filter\js\update_status.js" crc="1424498196"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\module_filter\js\permissions.js" crc="1424498196"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\module_filter\js\modules.js" crc="1424498196"/>
@@ -3051,6 +3188,17 @@
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\imce\imce.module" crc="1459356524"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\imce\imce.install" crc="1459356524"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\imce\imce.info" crc="1459361270"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\templates\fpp-bundles--admin-help.tpl.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\includes\fpp_bundles.features.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\includes\fpp_bundles.admin.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\classes\FppBundlesException.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\classes\FppBundlesDatabase.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\classes\FppBundle.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\LICENSE.txt" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\fpp_bundles.module" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\fpp_bundles.install" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\fpp_bundles.info" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fpp_bundles\fpp_bundles.api.php" crc="1476730166"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fieldable_panels_panes\tests\fpp_with_panels_test.pages_default.inc" crc="1475600999"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fieldable_panels_panes\tests\fpp_with_panels_test.module" crc="1475600999"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\fieldable_panels_panes\tests\fpp_with_panels_test.info" crc="1475600999"/>
@@ -3359,6 +3507,30 @@
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\domain\domain.api.php" crc="1438544072"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\domain\domain.admin.inc" crc="1438544072"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\domain\CHANGELOG.txt" crc="1438544072"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\js\diff.js" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\includes\text.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\includes\taxonomy.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\includes\number.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\includes\node.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\includes\list.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\includes\image.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\includes\file.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\css\diff.default.css" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\css\diff.boxes.css" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\readme.txt" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\LICENSE.txt" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\DiffEngine.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.tokens.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.theme.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.pages.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.module" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.install" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.info" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.diff.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.css" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.api.php" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\diff.admin.inc" crc="1476730166"/>
+		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\diff\CHANGELOG.txt" crc="1476730166"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\devel_debug_log\README.txt" crc="1401737894"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\devel_debug_log\LICENSE.txt" crc="1383315256"/>
 		<file name="C:\wamp\www\bmb-new\drupal\sites\all\modules\contrib\devel_debug_log\devel_debug_log.module" crc="1401737894"/>
