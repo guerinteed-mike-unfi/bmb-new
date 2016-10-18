@@ -1,4 +1,4 @@
-name = 'Mediterranean Organics'
+name = Mediterranean Organics
 description = Bootstrap subtheme for Mediterranean Organics.
 core = 7.x
 base theme = bootstrap

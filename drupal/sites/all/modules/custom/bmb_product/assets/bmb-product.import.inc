@@ -22,7 +22,6 @@
  * integer $run_from_ui - 0 = run from cron, 1 = run from UI
  */
 function bmb_product_import($method = NULL, $domain_id = NULL, $run_from_ui = 0){
-  //print('here - ' . $method . ' - ' . $domain_id . '<br>');
   if(empty($method) || empty($domain_id)) {
     if($run_from_ui == 0) {
       watchdog('BMB Product', 'Missing parameters. Unable to run import.', NULL, WATCHDOG_ERROR);
@@ -549,7 +548,15 @@ function bmb_product_pim_import(&$wsup) {
   
   $product_feed = array();
   //$product_feed['url'] = BMB_PRODUCT_PIM_BASE_URL . BMB_PRODUCT_PIM_PRODUCT_ENDPOINT;
+  
+  /**
+  * 
+  * HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  * 
+  */
   $product_feed['url'] = 'http://bmb-new.com/pim_api_products_from_test.txt';
+  
+  
   $product_feed['header_info'] = array('Authorization:Bearer ' . $wsup['auth']['access_token']);
   $product_feed['params'] = array('brand' => '1|' . $pim_brand_id);
   
@@ -622,10 +629,6 @@ function bmb_product_normalize_input_pim($product, $wsup){
   $arr['pdv_sodium'] = $product['nutrition_panel'][0]['sodium_daily_value'];
   $arr['pdv_carbohydrates'] = $product['nutrition_panel'][0]['total_carb_daily_value'];
   $arr['pdv_fiber'] = $product['nutrition_panel'][0]['dietary_fiber_daily_value'];
-  
-  // trim each value
-  $arr_temp = array_map('trim', $arr);
-  $arr = $arr_temp;
   
   // -- categories -- //
   

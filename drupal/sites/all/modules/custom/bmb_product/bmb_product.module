@@ -54,7 +54,10 @@ function bmb_product_cron() {
     $domains = domain_domains();
     foreach($domains as $domain){
       if(variable_get('bmb_product_domain_include_' . $domain['domain_id'], 0) == 1) {
-        $queue->create($domain['domain_id']);
+        if(variable_get('bmb_product_domain_method_' . $domain['domain_id'], NULL) == '0') {
+          $queue->createItem($domain['domain_id']);
+        }
+        
       }
     } 
   } 
@@ -64,6 +67,7 @@ function bmb_product_cron() {
  * Implements hook_cron_queue_info().
  */
 function bmb_product_cron_queue_info(){
+  ddl(' in bmb_product_cron_queue_info');
   $queues['bmb_products'] = array(
     'worker callback' => 'bmb_product_import_on_cron',
 	  'time' => 240,
@@ -72,10 +76,15 @@ function bmb_product_cron_queue_info(){
 }
 
 function bmb_product_import_on_cron($item){
-  module_load_include('inc', 'bmb_product', '/assets/bmb-product.import.inc');
-  bmb_product_pim_import($item);
+  ddl('bmb_product_import_on_cron item - ' . $item);
+  
+  drupal_set_message('bmb_product cron ran - ' . $item);
+  //watchdog('bmb_product', 'PIM cron running for site %domain_id', array('%domain_id' => $item), $link = NULL);
+  
+  module_load_include('inc', 'bmb_product', '/assets/bmb-product.import');
+  bmb_product_import('pim', $item, 0);
+  
 }
-
 
 /**
  * Implementation of hook_form_alter().
@@ -151,6 +160,26 @@ function bmb_product_form_domain_form_alter_submit($form, $form_state) {
     }
   }
 }
+
+
+
+
+
+
+
+
+/**
+ * Delete {system} records for long-lost modules.
+ */
+/*function bmb_product_update_7100() {
+  $modules = array(
+    'bmb_product_import',
+  );
+  db_delete('system')
+    ->condition('name', $modules, 'IN')
+    ->condition('type', 'module')
+    ->execute();
+}*/
 
 
 
