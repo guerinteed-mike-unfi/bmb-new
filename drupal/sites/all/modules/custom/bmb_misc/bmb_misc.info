@@ -1,0 +1,4 @@
+name = Blue Marble Brands Miscellaneous
+description = Custom module for doing all the little things that need to be done
+core = 7.x
+package = UNFI

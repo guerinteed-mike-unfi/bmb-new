@@ -71,8 +71,7 @@ bootstrap_include('bootstrap', 'includes/alter.inc');
 function bootstrap_preprocess_panels_pane(&$vars) {
   if($vars['pane']->type == 'fieldable_panels_pane'){
     // if the panel has the field "field_template_id" we will use it for template suggestions
-    if($vars['content']['field_template_id']['#items'][0]['value']){
-      //ddl($vars['content']['field_template_id']['#items'][0]['value']);
+    if(isset($vars['content']['field_template_id']['#items'][0]['value'])){
       $vars['theme_hook_suggestions'][] = 'panels_pane__fieldable_panels_pane__tempid_' . $vars['content']['field_template_id']['#items'][0]['value'];
     }
   }

@@ -73,7 +73,7 @@
 
 
 function medorganic_preprocess_panels_pane(&$variables) {
-  ddl($variables);
+  //ddl($variables);
   
 /*  // fieldable panel panes
   if ($variables['pane']->type == 'fieldable_panels_pane') {

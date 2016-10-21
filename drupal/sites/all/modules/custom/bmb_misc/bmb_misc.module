@@ -1,0 +1,21 @@
+<?php
+
+
+/**
+* Implements hook_form_alter
+*/
+function bmb_misc_form_alter(&$form, &$form_state, $form_id) {
+  //ddl('webform');
+  //ddl($form_id);
+  
+  
+  // global contact form
+  // prepopulate info for hidden fields - site name and site ID 
+  if($form_id == 'webform_client_form_44') {
+    ddl($form);
+    drupal_set_message('setting');
+    
+    $form['submitted']['web_id']['#webform_component']['value'] == '78965';
+    
+  }
+}
