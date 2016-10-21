@@ -3,19 +3,43 @@
 
 /**
 * Implements hook_form_alter
+* @client_form_44_form
 */
-function bmb_misc_form_alter(&$form, &$form_state, $form_id) {
-  //ddl('webform');
-  //ddl($form_id);
-  
-  
-  // global contact form
-  // prepopulate info for hidden fields - site name and site ID 
-  if($form_id == 'webform_client_form_44') {
-    ddl($form);
-    drupal_set_message('setting');
-    
-    $form['submitted']['web_id']['#webform_component']['value'] == '78965';
-    
+function bmb_misc_form_webform_client_form_44_alter(&$form, &$form_state, $form_id) {
+  global $_domain;
+  if(isset($_domain['domain_id'])){
+    $form['submitted']['web_id']['#default_value'] = variable_get('bmb_misc_biztalk_siteid_' . $_domain['domain_id'], '');
   }
+}
+
+/**
+ * Implementation of hook_form_alter().
+ * @form domain_form 
+ * 
+ */
+function bmb_misc_form_domain_form_alter(&$form, $form_state, $form_id)  {
+    $this_domain_id = $form['domain_id']['#value'];
+
+    $form['bmb_misc'] = array(
+      '#type' => 'fieldset', 
+      '#weight' => -10,
+      '#title' => t('Biztalk Info'), 
+      '#collapsible' => TRUE, 
+      '#collapsed' => TRUE,
+    );
+    
+    $form['bmb_misc']['bmb_misc_biztalk_siteid_' . $this_domain_id] = array(
+      '#type' => 'textfield',
+      '#title' => t('Biztalk Site ID'),
+      '#default_value' => variable_get('bmb_misc_biztalk_siteid_' . $this_domain_id, ''),
+      '#size' => 40,  
+    );
+    
+    $form['#submit'][] = 'bmb_misc_form_domain_form_alter_submit';
+}
+
+function bmb_misc_form_domain_form_alter_submit($form, $form_state) {
+    $this_domain_id = $form_state['values']['domain_id'];
+    variable_set('bmb_misc_biztalk_siteid_' . $this_domain_id, $form_state['values']['bmb_misc_biztalk_siteid_' . $this_domain_id]);
+    
 }

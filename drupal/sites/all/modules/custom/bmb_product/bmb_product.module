@@ -67,7 +67,7 @@ function bmb_product_cron() {
  * Implements hook_cron_queue_info().
  */
 function bmb_product_cron_queue_info(){
-  ddl(' in bmb_product_cron_queue_info');
+  //ddl(' in bmb_product_cron_queue_info');
   $queues['bmb_products'] = array(
     'worker callback' => 'bmb_product_import_on_cron',
 	  'time' => 240,
@@ -76,7 +76,7 @@ function bmb_product_cron_queue_info(){
 }
 
 function bmb_product_import_on_cron($item){
-  ddl('bmb_product_import_on_cron item - ' . $item);
+  //ddl('bmb_product_import_on_cron item - ' . $item);
   
   drupal_set_message('bmb_product cron ran - ' . $item);
   //watchdog('bmb_product', 'PIM cron running for site %domain_id', array('%domain_id' => $item), $link = NULL);
@@ -136,7 +136,6 @@ function bmb_product_form_domain_form_alter(&$form, $form_state, $form_id)  {
 }
 /**
  * Submit function for domain_form
- * 
  */
 function bmb_product_form_domain_form_alter_submit($form, $form_state) {
   if( isset($form_state['values']['domain_id']) && !empty($form_state['values']['domain_id']) ){
