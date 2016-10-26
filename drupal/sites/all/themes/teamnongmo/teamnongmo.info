@@ -24,7 +24,8 @@ regions[page_bottom]    = 'Page bottom'
 ;; Stylesheets
 ;;;;;;;;;;;;;;;;;;;;;
 
-stylesheets[all][] = css/style.css
+stylesheets[all][] = ../_COMMON_CSS/css/style.css
+stylesheets[all][] = css/teamnongmo.css
 
 
 ;;;;;;;;;;;;;;;;;;;;;
