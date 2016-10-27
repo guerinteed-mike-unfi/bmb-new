@@ -68,6 +68,11 @@ drupal_static_reset('element_info');
 bootstrap_include('bootstrap', 'includes/alter.inc');
 
 /*------ DO NOT ALTER ANYTHING ABOVE THIS LINE - CAME FROM BOOTSTRAP -----*/
+
+/**
+ * implements template_preprocess_panels_pane(&$vars)
+ * -> http://www.drupalcontrib.org/api/drupal/contributions%21panels%21panels.module/function/template_preprocess_panels_pane/7
+ */
 function bootstrap_preprocess_panels_pane(&$vars) {
   if($vars['pane']->type == 'fieldable_panels_pane'){
     // if the panel has the field "field_template_id" we will use it for template suggestions
@@ -75,5 +80,21 @@ function bootstrap_preprocess_panels_pane(&$vars) {
       $vars['theme_hook_suggestions'][] = 'panels_pane__fieldable_panels_pane__tempid_' . $vars['content']['field_template_id']['#items'][0]['value'];
     }
   }
-  //ddl($vars);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
