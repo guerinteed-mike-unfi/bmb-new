@@ -11,7 +11,7 @@
  */
 function bmb_product_menu() {
 
-  $form['admin/config/bmb-product'] = array(
+  $item['admin/config/bmb-product'] = array(
     'title' => 'BMB Product',
     'description' => 'Settings for PIM',
     'page callback' => 'drupal_get_form',
@@ -20,7 +20,7 @@ function bmb_product_menu() {
     'file' => '/assets/bmb-product.settings-form.inc',
   );
   
-  $form['admin/config/bmb-product/settings'] = array(
+  $item['admin/config/bmb-product/settings'] = array(
     'title' => 'BMB Product Import Settings',
     'description' => 'Settings for PIM',
     'page callback' => 'drupal_get_form',
@@ -30,7 +30,7 @@ function bmb_product_menu() {
   );
   
   // handles the bmbws import
-  $form['bmb-product/import'] = array(
+  $item['bmb-product/import'] = array(
     'title' => 'BMBWS Product Update',
     'description' => 'Add and/or Update BMB Product nodes from BMBWS.',
     'page callback' => 'bmb_product_import',
@@ -40,7 +40,7 @@ function bmb_product_menu() {
     'file' => '/assets/bmb-product.import.inc',
   );
   
-  return $form;
+  return $item;
 }
 
 /**

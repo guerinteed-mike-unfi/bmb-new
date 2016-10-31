@@ -2,6 +2,69 @@
 
 
 /**
+ * Implements hook_menu(). 
+ */
+function bmb_misc_menu() {
+
+  $item['bmb-misc/site-dashboard'] = array(
+    'title' => 'Site Dashboard',
+    'description' => 'A dashboard for administering content by site',
+    'access callback' => 'bmb_misc_dispatch_dashboard_site_access',
+    'page callback' => 'bmb_misc_dispatch_dashboard_site',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  return $item;
+}
+
+function bmb_misc_dispatch_dashboard_site(){
+  global $_domain;
+  if(isset($_domain['domain_id'])){
+    
+    $query = db_select('node', 'n');
+    $query->leftJoin('domain_access', 'da', 'n.nid = da.nid');
+    $query->condition('da.gid', $_domain['domain_id'], '=');
+    $query->condition('n.type', 'site_dashboards', '=');
+    $query->fields('n', array('nid'));
+    $query->range(0, 1);
+    $results = $query->execute();
+    $result = $results->fetchObject();
+    
+    if(empty($result->nid)){
+      $content = '<h2>A dashboard for ' . $_domain['sitename'] . ' does not exist.</h2>';
+      $content .= '<p>Please contact web team to create one.</p>';
+      return $content;
+    }
+    
+    // if a node is found then redirect user 
+    drupal_goto(drupal_get_path_alias('node/' . $result->nid)); 
+  }
+}
+
+function bmb_misc_dispatch_dashboard_site_access(){
+  global $user;
+  
+  foreach($user->roles as $role){
+    if($role == 'administrator' || $role == 'editor'){
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+function bmb_misc_form_alter(&$form, &$form_state, $form_id) {
+  
+  switch ($form_id) {
+    case 'image_common_node_form':
+      if(!empty($_GET['field_usage_id'])) {
+        $form['field_usage_id']['und'][0]['value']['#default_value'] = $_GET['field_usage_id'];
+      }
+      break;
+  }
+  
+}
+
+/**
 * Implements hook_form_alter
 * @client_form_44_form
 */
