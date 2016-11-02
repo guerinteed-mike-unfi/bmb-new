@@ -1,9 +1,20 @@
 <?php 
 //set all variables for each
 // ddl($row);  -also $view
-$slide_title = $row->field_field_slide_title[0]['rendered']['#markup'];
-$display_text_1 = $row->field_body[0]['rendered']['#markup'];
-$display_text_2 = $row->field_field_display_text_2[0]['rendered']['#markup'];
+$slide_title = '';
+$display_text_1 = '';
+$display_text_2 = '';
+$click_through_url = '';
+
+if(isset($row->field_field_slide_title[0]['rendered']['#markup'])){
+  $slide_title = $row->field_field_slide_title[0]['rendered']['#markup'];
+}
+if(isset($row->field_body[0]['rendered']['#markup'])){
+  $display_text_1 = $row->field_body[0]['rendered']['#markup'];
+}
+if(isset($row->field_field_display_text_2[0]['rendered']['#markup'])){
+  $display_text_2 = $row->field_field_display_text_2[0]['rendered']['#markup'];
+}
 
 // get image info for common image
 $image_path = file_create_url($row->field_field_image_common[0]['rendered']['#item']['uri']);
@@ -11,10 +22,14 @@ $image_alt = $row->field_field_image_common[0]['rendered']['#item']['alt'];
 $open_in_new_window = ($row->field_field_open_in_new_window[0]['raw']['value'] == 0 ? '' : ' target="_blank"');
 
 // determines what is clickable -> None, Whole Slide or Diplay Text
-$clickable_area = $row->field_field_clickable_area[0]['raw']['value'];
+if(isset($row->field_field_clickable_area[0]['raw']['value'])){
+  $clickable_area = $row->field_field_clickable_area[0]['raw']['value'];
+}
 
 // click through URL 
-$click_through_url = $row->field_field_click_through_url[0]['rendered']['#markup'];
+if(isset($row->field_field_click_through_url[0]['rendered']['#markup'])){
+  $click_through_url = $row->field_field_click_through_url[0]['rendered']['#markup'];
+}
 
 $anchor_opening = "";
 if($clickable_area != 'None' && !empty($click_through_url)) {
@@ -30,7 +45,6 @@ for($x=0; $x<=count($view->result); $x++){
     break;
   }
 }
-ddl($row);
 ?>
 <?php if ($clickable_area == "Whole Slide") {
   print $anchor_opening;

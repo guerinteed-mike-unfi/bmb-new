@@ -6,12 +6,12 @@
  * import prodess helper functions for bmb-product module
  */
  
- // PIM CONNECTION INFO
- define('BMB_PRODUCT_PIM_BASE_URL', 'https://bluemarbledm-staging.metaltoad-sites.com/');
- define('BMB_PRODUCT_PIM_AUTH_ENDPOINT', 'oauth2/token');
- define('BMB_PRODUCT_PIM_PRODUCT_ENDPOINT', 'service/digitalcore/products');
- define('BMB_PRODUCT_PIM_USER', 'bmbwebsites');
- define('BMB_PRODUCT_PIM_PASSWORD', 'Blu3m@rbl3');
+// PIM CONNECTION INFO
+define('BMB_PRODUCT_PIM_BASE_URL', 'https://bluemarbledm-staging.metaltoad-sites.com/');
+define('BMB_PRODUCT_PIM_AUTH_ENDPOINT', 'oauth2/token');
+define('BMB_PRODUCT_PIM_PRODUCT_ENDPOINT', 'service/digitalcore/products');
+define('BMB_PRODUCT_PIM_USER', 'bmbwebsites');
+define('BMB_PRODUCT_PIM_PASSWORD', 'Blu3m@rbl3');
  
 /**
  * Callback for menu hook
@@ -114,7 +114,7 @@ function bmb_product_import($method = NULL, $domain_id = NULL, $run_from_ui = 0)
   if($run_from_ui == 1) {
     drupal_set_message($str_status);
   }
-  //drupal_goto('/admin/config/bmb-product/settings');
+  drupal_goto('/admin/config/bmb-product/settings');
 }
 
 // -- COMMON FUNCTIONS - START ------------------------------------------------------- //

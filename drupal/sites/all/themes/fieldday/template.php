@@ -52,3 +52,17 @@ function fieldday_menu_link(array $variables) {
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
 }
+
+/**
+ * template.php
+ *
+ * Implementation of hook_preprocess_panels_pane().
+ */
+/*function fieldday_preprocess_panels_pane(&$variables) {
+
+  ddl($variables);
+  if($variables['pane']->type == 'test') {
+    $variables['theme_hook_suggestions'][] = 'panels_pane__test';  
+  } 
+}
+*/ 

@@ -52,16 +52,25 @@ function bmb_misc_dispatch_dashboard_site_access(){
   return FALSE;
 }
 
+/**
+ * Implements hook_form_alter
+ * 
+ * @param array  $form
+ * @param array  $form_state
+ * @param string $form_id
+ * 
+ * @return - none -> $form, $form_state passed by reference
+ */
 function bmb_misc_form_alter(&$form, &$form_state, $form_id) {
   
   switch ($form_id) {
     case 'image_common_node_form':
+    case 'carousel_node_form':
       if(!empty($_GET['field_usage_id'])) {
         $form['field_usage_id']['und'][0]['value']['#default_value'] = $_GET['field_usage_id'];
       }
       break;
   }
-  
 }
 
 /**
