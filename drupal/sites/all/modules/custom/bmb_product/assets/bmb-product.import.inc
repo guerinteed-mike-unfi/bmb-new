@@ -36,7 +36,8 @@ function bmb_product_import($method = NULL, $domain_id = NULL, $run_from_ui = 0)
   $vocab_product = variable_get('bmb_product_category', 0);
   $vocab_attributes = variable_get('bmb_product_attributes', 0);
   $vocab_allergens = variable_get('bmb_product_allergens', 0);
-  if($vocab_product == 0 || $vocab_attributes == 0 || $vocab_allergens == 0){
+  $vocab_certifications = variable_get('bmb_product_cerfications', 0);
+  if($vocab_product == 0 || $vocab_attributes == 0 || $vocab_allergens == 0 || $vocab_certifications == 0){
     if($run_from_ui == 0) {
       watchdog('BMB Product', 'Vocabularies not set up correctly. Unable to run import.', NULL, WATCHDOG_ERROR);
       return;
@@ -51,11 +52,13 @@ function bmb_product_import($method = NULL, $domain_id = NULL, $run_from_ui = 0)
   $wsup = array();
   $wsup['import_method'] = $method;
   $wsup['run_from_ui'] = $run_from_ui;
+  
   // get domain info stored by domain access module
   $wsup['domain'] = domain_load($domain_id);
   $wsup['taxonomy']['product'] = taxonomy_vocabulary_load($vocab_product);
   $wsup['taxonomy']['attributes'] = taxonomy_vocabulary_load($vocab_attributes);
   $wsup['taxonomy']['allergens'] = taxonomy_vocabulary_load($vocab_allergens);
+  $wsup['taxonomy']['certifications'] = taxonomy_vocabulary_load($vocab_certifications);
   
   // product category taxonomy is used by all domains
   // entry is set at parent domain level
@@ -90,7 +93,7 @@ function bmb_product_import($method = NULL, $domain_id = NULL, $run_from_ui = 0)
   foreach($wsup['current_nodes'] as $nid => $status){
     $arr_status[$status][] = $nid;
     if($status == 'existed'){
-      node_delete($nid);
+      //node_delete($nid);
     }
   }
   $str_status = 'BMB Product Update: ' . $wsup['domain']['sitename'] . ' (' . $method . ')<br>';
@@ -114,7 +117,7 @@ function bmb_product_import($method = NULL, $domain_id = NULL, $run_from_ui = 0)
   if($run_from_ui == 1) {
     drupal_set_message($str_status);
   }
-  drupal_goto('/admin/config/bmb-product/settings');
+  //drupal_goto('/admin/config/bmb-product/settings');
 }
 
 // -- COMMON FUNCTIONS - START ------------------------------------------------------- //
@@ -153,6 +156,8 @@ function bmb_product_nodes_by_domain_id($domain_id){
  * 
  * @return $arr
  *   array -> status, results
+ * 
+ * *** NOTE - for products add the parameters to URL NOT postfields 
  */
 function bmb_product_get_external_data($import_info = NULL) {
   if(is_null($import_info)) {
@@ -161,11 +166,6 @@ function bmb_product_get_external_data($import_info = NULL) {
       'message' => "Incorrect parameters supplied to function _bmb_pim_get_external_info",
     );
   }
-  
-  /*print('4 - curl before<pre>');
-  print_r($import_info);
-  print('</pre><hr>');*/
-  
   
   // curl process
   $ch = curl_init();
@@ -176,17 +176,11 @@ function bmb_product_get_external_data($import_info = NULL) {
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);  
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);                    // Will return the response, if false it print the response
   curl_setopt($ch, CURLOPT_FAILONERROR, TRUE);
-  //curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
-  //curl_setopt($ch, CURLOPT_HEADER, FALSE);
   if(isset($import_info['header_info'])){
     curl_setopt($ch, CURLOPT_HTTPHEADER, $import_info['header_info']);      
   }
   
   $result = curl_exec($ch);
-  
-  /*print('curl results<pre>');
-  print_r($result);
-  print('</pre><hr>');*/
   
   if($errno = curl_errno($ch)) {
     $error_message = curl_strerror($errno);
@@ -207,10 +201,8 @@ function bmb_product_get_external_data($import_info = NULL) {
       'message' => "cURL result is empty.",
     ); 
   }
-  /*print('here - <br>');
-  print($result);
-  print('<hr>');*/
   
+  // successful pull
   return array(
     'status' => "success",
     'results' => json_decode($result, true),
@@ -308,6 +300,7 @@ function bmb_product_save_product($product, &$wsup){
     'pim_nid' => 'field_bp_pim_nid',
     'pim_created' => 'field_bp_pim_creation_date',
     'pim_changed' => 'field_bp_pim_change_date',
+    'whole_grains_per_serving' => 'field_bp_whole_grains_per_servin',
   );
   foreach($arr_mapping as $key => $value) {
     if(isset($product[$key])){
@@ -327,7 +320,7 @@ function bmb_product_save_product($product, &$wsup){
     $n->field_bp_product_allergens['und'] = $product['allergen_category_info'];
   }
   
-  node_save($n);
+  //node_save($n);
   
   // reminder - passed in as reference
   $wsup['current_nodes'][$n->nid] = $str_status;
@@ -519,8 +512,11 @@ function bmb_product_normalize_input_bmbws($product, $wsup){
 
 function bmb_product_pim_import(&$wsup) {
   
+  // ** NOTE ************************************************************
+  // pass parameters as part of URL **NOT** in postfields
+  
   // retrieve pim domain id - saved in vars
-  $pim_brand_id = variable_get('bmb_product_pim_siteid_' . $wsup['domain']['domain_id'], NULL);
+  $pim_brand_id = trim(variable_get('bmb_product_pim_siteid_' . $wsup['domain']['domain_id'], NULL));
   $wsup['pim_brand_id'] = $pim_brand_id;
   
   // authenticate with pim servers
@@ -529,12 +525,6 @@ function bmb_product_pim_import(&$wsup) {
   $auth_info['params'] = array('grant_type' => 'password', 'client_id' => 'default', 'username' => BMB_PRODUCT_PIM_USER, 'password' => BMB_PRODUCT_PIM_PASSWORD);
   $auth_returned = bmb_product_get_external_data($auth_info);
   
-  /*print('11 - auth returned<pre>');
-  print_r($auth_returned);
-  print('</pre><hr>');*/
-  
-  
-  
   if($auth_returned['status'] == 'error'){
     drupal_set_message(t('Unable to authenticate with the PIM.'), 'error');
     watchdog('BMB Product', t('Unable to authenticate with the PIM.'), NULL, WATCHDOG_ERROR);
@@ -542,44 +532,53 @@ function bmb_product_pim_import(&$wsup) {
   }
   $wsup['auth'] = $auth_returned['results'];
   
-  /*print('333 - right before<pre>');
-  print_r($wsup);
-  print('</pre><hr>');*/
-  
   $product_feed = array();
-  //$product_feed['url'] = BMB_PRODUCT_PIM_BASE_URL . BMB_PRODUCT_PIM_PRODUCT_ENDPOINT;
-  
-  /**
-  * 
-  * HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  * 
-  */
-  $product_feed['url'] = 'http://bmb-new.com/pim_api_products_from_test.txt';
-  
-  
+  $product_feed['url'] = BMB_PRODUCT_PIM_BASE_URL . BMB_PRODUCT_PIM_PRODUCT_ENDPOINT;
   $product_feed['header_info'] = array('Authorization:Bearer ' . $wsup['auth']['access_token']);
-  $product_feed['params'] = array('brand' => '1|' . $pim_brand_id);
   
-  $products_returned = bmb_product_get_external_data($product_feed);
-  
-  /*print('5 - products returned<pre>');
-  print_r($products_returned);
-  print('</pre><hr>');*/
-  
-  foreach($products_returned['results']['results'] as $product){
+  $ws_page = 0;
+  $total_pages = 0;
+  do {
+    $product_feed['url'] = $product_feed['url'] . '?brand=1|' . $pim_brand_id . '&page=' . $ws_page;
+    //$product_feed['url'] = $product_feed['url'] . '?brand=1|769661&page=0';
+    //$product_feed['url'] = $product_feed['url'] . '?page=0';
+    $products_returned = bmb_product_get_external_data($product_feed);
     
-    //return taxonomy children - parent term is site
-    $site_taxonomy_children = taxonomy_get_tree($wsup['taxonomy_parent']->vid, $wsup['taxonomy_parent']->tid);
+    /*print('mikeg-url<br>');
+    print($product_feed['url'] . '<hr>');*/
     
-    $product['current_taxonomy'] = $site_taxonomy_children;
-    $product_normalized = bmb_product_normalize_input_pim($product, $wsup);
-    
-    print('product normalized<pre>');
-    print_r($product_normalized);
+    print('page ' . $ws_page . ' - products returned<pre>');
+    print_r($products_returned);
     print('</pre><hr>');
     
+    $total_records = $products_returned['results']['total'];
+    if(!empty($total_records)){
+      $total_pages = ceil($total_records/100)-1;
+      if($total_pages < 0) {
+        $total_pages = 0;
+      }
+    }
     
-  }
+    foreach($products_returned['results']['results'] as $product){
+      
+      //return taxonomy children - parent term is site
+      $site_taxonomy_children = taxonomy_get_tree($wsup['taxonomy_parent']->vid, $wsup['taxonomy_parent']->tid);
+      
+      $product['current_taxonomy'] = $site_taxonomy_children;
+      $product_normalized = bmb_product_normalize_input_pim($product, $wsup);
+      
+      /*print('product normalized<pre>');
+      print_r($product_normalized);
+      print('</pre><hr>');*/
+      
+      // save or update node
+      bmb_product_save_product($product_normalized, $wsup);
+    }
+    
+    $ws_page++;
+  } while ($ws_page <= $total_pages);
+  
+  
 }
 
 /**
@@ -594,65 +593,169 @@ function bmb_product_pim_import(&$wsup) {
 function bmb_product_normalize_input_pim($product, $wsup){
   $arr = array();
   
-  $arr['UNFI_item'] = $product['item_num'];    ////??????
+  //ddl($wsup);
+  
   $arr['domain_id'] = $wsup['domain']['domain_id'];
-  $arr['pim_nid'] = $product['nid'];
-  $arr['pim_created'] = $product['created'];
-  $arr['pim_changed'] = $product['changed'];
-  $arr['country'] = current($product['country_of_origin']);
-  $arr['upc'] = $product['upc'];
-  $arr['title'] = $product['title'];
-  $arr['primary_image'] = $product['primary_image']['renditions']['web_thumbnail'];
-  $arr['description'] = $product['item_description'];
-  $arr['ingredients'] = $product['ingredients_print'];
-  $arr['retail_size'] = trim($product['item_size']) . ' ' . trim($product['item_size_uom']);
-  $arr['serving_size'] = $product['nutrition_panel'][0]['serving_size_string'];
-  $arr['servings_per_container'] = $product['nutrition_panel'][0]['estimated_servings'];
-  $arr['calories'] = $product['nutrition_panel'][0]['calories_value'];
-  $arr['calories_from_fat'] = $product['nutrition_panel'][0]['calories_from_fat_value'];
-  $arr['total_fat'] = $product['nutrition_panel'][0]['total_fat_value'];
-  $arr['trans_fat'] = $product['nutrition_panel'][0]['trans_fat_value'];
-  $arr['saturated_fat'] = $product['nutrition_panel'][0]['saturated_fat_value'];
-  $arr['cholesterol'] = $product['nutrition_panel'][0]['cholesterol_value'];
-  $arr['sodium'] = $product['nutrition_panel'][0]['sodium_value'];
-  $arr['carbohydrates'] = $product['nutrition_panel'][0]['total_carbohydrate_value'];
-  $arr['fiber'] = $product['nutrition_panel'][0]['dietary_fiber_value'];
-  $arr['sugars'] = $product['nutrition_panel'][0]['sugar_value'];
-  $arr['protein'] = $product['nutrition_panel'][0]['protein_value'];
-  $arr['vitamin_a'] = $product['nutrition_panel'][0]['vitamin_a_value'];
-  $arr['vitamin_c'] = $product['nutrition_panel'][0]['vitamin_c_value'];
-  $arr['calcium'] = $product['nutrition_panel'][0]['calcium_value'];
-  $arr['iron'] = $product['nutrition_panel'][0]['iron_value'];
-  $arr['pdv_total_fat'] = $product['nutrition_panel'][0]['total_fat_daily_value'];
-  $arr['pdv_saturated_fat'] = $product['nutrition_panel'][0]['saturated_fat_daily_value'];
-  $arr['pdv_cholesterol'] = $product['nutrition_panel'][0]['cholesterol_daily_value'];
-  $arr['pdv_sodium'] = $product['nutrition_panel'][0]['sodium_daily_value'];
-  $arr['pdv_carbohydrates'] = $product['nutrition_panel'][0]['total_carb_daily_value'];
-  $arr['pdv_fiber'] = $product['nutrition_panel'][0]['dietary_fiber_daily_value'];
+  
+  // values in first level
+  $arr_first_level = array(
+    'UNFI_item' => 'item_num',    ////??????
+    'pim_nid' => 'nid',
+    'pim_created' => 'created',
+    'pim_changed' => 'changed',
+    'upc' => 'upc',
+    'title' => 'title',
+    'description' => 'short_description',
+    'ingredients' => 'ingredients_print',
+  );
+  foreach($arr_first_level as $first_level_key => $first_level_value) {
+    if(isset($product[$first_level_value])){
+      $arr[$first_level_key] = trim($product[$first_level_value]);
+    }
+  }
+  
+  // get values in nutrition panel
+  $nutrion_panel = array(
+    'serving_size' => 'serving_size_string',
+    'servings_per_container' => 'estimated_servings',
+    'calories' => 'calories_value',
+    'calories_from_fat' => 'calories_from_fat_value',
+    'total_fat' => 'total_fat_value',
+    'trans_fat' => 'trans_fat_value',
+    'saturated_fat' => 'saturated_fat_value',
+    'cholesterol' => 'cholesterol_value',
+    'sodium' => 'sodium_value',
+    'carbohydrates' => 'total_carbohydrate_value',
+    'fiber' => 'dietary_fiber_value',
+    'sugars' => 'sugar_value',
+    'protein' => 'protein_value',
+    'vitamin_a' => 'vitamin_a_value',
+    'vitamin_c' => 'vitamin_c_value',
+    'calcium' => 'calcium_value',
+    'iron' => 'iron_value',
+    'pdv_total_fat' => 'total_fat_daily_value',
+    'pdv_saturated_fat' => 'saturated_fat_daily_value',
+    'pdv_cholesterol' => 'cholesterol_daily_value',
+    'pdv_sodium' => 'sodium_daily_value',
+    'pdv_carbohydrates' => 'total_carb_daily_value',
+    'pdv_fiber' => 'dietary_fiber_daily_value',
+    'whole_grains_per_serving' => 'whole_grain_per_serving'
+  );
+  foreach($nutrion_panel as $nutkey => $nutval){
+    if(isset($product['nutrition_panel'][0][$nutval])){
+      $arr[$nutkey] = trim($product['nutrition_panel'][0][$nutval]);
+    }
+  }
+  
+  // these do not conform to the above
+  if(isset($product['primary_image']['url'])){
+    $arr['primary_image'] = $product['primary_image']['url'];
+  }
+  if(isset($product['country_of_origin'])){
+    $arr['country'] = current($product['country_of_origin']);
+  }
+  
+  $mg_retail_size = (isset($product['item_size']) ? trim($product['item_size']) : '');
+  $mg_retail_size_uom = (isset($product['item_size_uom']) ? trim($product['item_size_uom']) : '');
+  $arr['retail_size'] = $mg_retail_size . ' ' . $mg_retail_size_uom;
   
   // -- categories -- //
+  // primary category   ->web_category
+  // $wsup['taxonomy_parent'] has info on primary taxonomy
+  if(isset($product['web_category']) && !empty($product['web_category'])){
+    $vals_only = array_values($product['web_category']);
+    $web_category = $vals_only[0];
+    
+    foreach($product['current_taxonomy'] as $tax_item) {
+      if(strtolower($tax_item->name) == strtolower($web_category)){
+        $arr['category_info'][] = array('tid' => $tax_item->tid);
+        break;
+      }
+    }
+    if(!isset($arr['category_info'])) {
+      // no category info found so we add it then update info
+      $new_term = new stdClass();
+      $new_term->name = $web_category;
+      $new_term->vid = $wsup['taxonomy_parent']->vid;
+      $new_term->parent = $wsup['taxonomy_parent']->tid;
+      taxonomy_term_save($new_term);
+      $arr['category_info'][] = array('tid' => $new_term->tid);
+      $arr['new_category'] = 1;  
+    }
+  }
   
-  // primary ?????
-  
-  // attributes - these are listed as single values so we will put together a list
+  // ---- attributes - these are listed as single values so we will put together a list ---
   /*
-  bpa_free
-  [gluten_free] => Array([24962] => Gluten-Free Certification Program GFCP)
+  boolean
+  --bpa_free
+  --kosher_daily
+  --kosher_mbuf
+  --kosher_pareve
+  --kosher_passover
+  
+  object - one element
+  --[non_gmo] => Array([27198] => Enrolled)
+  --whole_grain_council??
+  --organic_attributes => Array([24907] => >70%)
+  
+  object - possibly 2 elements - vegan or vegetarian 
+  --[veg_attributes] => Array([24911] => Vegetarian)
+  
+  string
+  -- gluten_attributes
+  */
+  
+  $bol_attributes = array(
+    'bpa_free' => 'BPA Free',
+    'kosher_daily' => 'Kosher Daily',
+    'kosher_mbuf' => 'Kosher MBUF',
+    'kosher_pareve' => 'Kosher Pareve',
+    'kosher_passover' => 'Kosher Passover',
+  );
+  foreach($bol_attributes as $bol_attr_key => $bol_attr_val){
+    if(isset($product[$bol_attr_key]) && $product[$bol_attr_key] == 1){
+      $found_attribute = taxonomy_get_term_by_name($bol_attr_val, $wsup['taxonomy']['attributes']->machine_name);
+      if(empty($found_attribute)){
+        $new_attribute = new stdClass();
+        $new_attribute->name = $bol_attr_val;
+        $new_attribute->vid = $wsup['taxonomy']['attributes']->vid;
+        taxonomy_term_save($new_attribute);
+        $arr_attribute_current = $new_attribute;
+      } else {
+        $arr_attribute_current = current($found_attribute);
+      }
+      $arr['attribute_category_info'][] = array('tid' => $arr_attribute_current->tid);  
+    }
+  }
+  
+  $obj_one_element_attributes = array(
+    'non_gmo' => 'NON-GMO',
+    'organic_attributes' => 'Organic'
+  );
+  foreach($obj_one_element_attributes as $obj_one_element_attr_key => $obj_one_element_attr_val){
+    if(isset($product[$obj_one_element_attr_key]) && !empty($product[$obj_one_element_attr_key])){
+      $found_attribute = taxonomy_get_term_by_name($obj_one_element_attr_val . ' ' . current($product[$obj_one_element_attr_key]), $wsup['taxonomy']['attributes']->machine_name);
+      if(empty($found_attribute)){
+        $new_attribute = new stdClass();
+        $new_attribute->name = $obj_one_element_attr_val . ' ' . current($product[$obj_one_element_attr_key]);
+        $new_attribute->vid = $wsup['taxonomy']['attributes']->vid;
+        taxonomy_term_save($new_attribute);
+        $arr_attribute_current = $new_attribute;
+      } else {
+        $arr_attribute_current = current($found_attribute);
+      }
+      $arr['attribute_category_info'][] = array('tid' => $arr_attribute_current->tid);  
+    }
+  }
+  
+  /*
   [kosher_certifying_agency] => Array([25002] => KSA)
-  [kosher_daily] => 
-  [kosher_mbuf] => 
-  [kosher_pareve] => 1
-  [kosher_passover] =>  
-  [non_gmo] => Array([27198] => Enrolled)
-  [organic_attributes] => Array([24907] => >70%)
   [organic_certifier] => Array([24976] => BCS OKO-Garantie GMBH)
-  [salt_content_attributes] => Array([23716] => No Salt Added, [23718] => Sodium Free)
-  [veg_attributes] => Array([24911] => Vegetarian)
-  [whole_grain_per_serving] => 0.1
   [fair_trade_certificate] => Array  - lots o stuff
   [gluten_free_certificate] => Array  - lots o stuff 
   [kosher_certificate] => Array
   [organic_certificate] => Array
+  [gluten_free] => Array([24962] => Gluten-Free Certification Program GFCP)
   */
   
   // allergens in major_allergen_attributes
@@ -673,10 +776,6 @@ function bmb_product_normalize_input_pim($product, $wsup){
       $arr['allergen_category_info'][] = array('tid' => $arr_allergen_current->tid);
     }
   }
-  
-  
-  
-  
   
   return $arr;
 }

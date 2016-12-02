@@ -74,6 +74,13 @@ function bmb_product_settings_form($form, &$form_state) {
     '#default_value'    => variable_get('bmb_product_allergens', 0),
   );
   
+  $form['taxonomy_mapping']['bmb_product_cerfications'] = array(
+    '#type'             => 'select',
+    '#title'            => t('Vocabulary for Product Certifications'),
+    '#options'          => $checklist_vocab_array,
+    '#default_value'    => variable_get('bmb_product_cerfications', 0),
+  );
+  
   /* PIM FORM SETTING */
   $form['pim'] = array(
     '#type' => 'fieldset',

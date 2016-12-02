@@ -4,3 +4,5 @@ core = 7.x
 dependencies[] = entity
 dependencies[] = domain
 package = UNFI
+
+;unfi-version = 1.0
