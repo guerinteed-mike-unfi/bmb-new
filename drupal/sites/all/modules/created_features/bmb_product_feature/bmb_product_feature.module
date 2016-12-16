@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the BMB Product Feature feature.
+ */
+
+include_once 'bmb_product_feature.features.inc';
